@@ -1,0 +1,67 @@
+.header {
+
+    display : flex;
+    justify-content: space-between;
+    height: 3rem;
+    align-items: center;
+
+    &__left {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin : 0.5rem 0 0 1.5rem;
+        padding : 0.5rem;
+    }
+
+    &__right {
+        display: flex;
+        position: relative;
+        padding : 7px;
+        align-items: center;
+        margin : 0.5rem 1.5rem 0 0;
+        cursor: pointer;
+        
+        &--user {
+            display: block;
+            color : #888;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        &--avatar {
+            margin-right : 10px;
+            width: 1.85rem !important;
+            height: 1.85rem !important;
+        }
+
+        &--link {
+            text-decoration: none;
+            color: #000000
+        }
+    }
+
+    &__logo {
+        width: 3.5rem;
+        object-fit: contain;
+    }
+
+    &__title {
+        color : #21759B;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-left : 1rem;
+    }
+
+    &__link {
+        text-decoration: none;
+        color : #21759B;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: color 0.2s;
+    
+        &:hover,
+        &--active {
+            color: red;
+        }
+    }
+}

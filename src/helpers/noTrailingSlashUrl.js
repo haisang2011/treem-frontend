@@ -1,0 +1,1 @@
+export default (site) => site.replace(/\/$/,"")
