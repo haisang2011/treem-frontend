@@ -4,6 +4,10 @@ const initialState = {
     quanhuyenList : [],
     phuongxaList : [],
     thonList : [],
+    listHCDB : [],
+    listNCHCDB : [],
+    listHCK : [],
+    listHTTG : [],
 }
 
 export default (state=initialState, action) => {
@@ -22,6 +26,31 @@ export default (state=initialState, action) => {
             return {
                 ...state,
                 thonList : [...action.payload]
+            }
+        case CommonList.CLEAR_DATA_VILLAGE :
+            return {
+                ...state,
+                thonList : []
+            }
+        case CommonList.FETCH_DATA_HCDB :
+            return {
+                ...state,
+                listHCDB : [...action.payload],
+            }
+        case CommonList.FETCH_DATA_NCHCDB :
+            return {
+                ...state,
+                listNCHCDB : [...action.payload],
+            }
+        case CommonList.FETCH_DATA_HCK :
+                return {
+                    ...state,
+                    listHCK : [...action.payload],
+                }
+        case CommonList.FETCH_DATA_HTTG :
+            return {
+                ...state,
+                listHTTG : [...action.payload],
             }
         default:
             return state;

@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { green, red } from '@material-ui/core/colors'
 import { createMuiTheme, MuiThemeProvider, FormControl, FormHelperText, Input, InputLabel, makeStyles, FormLabel, TextField } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
@@ -10,36 +9,58 @@ const useStyles = makeStyles(theme => ({
         // },
         margin: props => (props.isFieldLogin ? "0 0 2rem 0" : null),
         width: '100%',
+
+        '& .MuiInputBase-root' : {
+            fontSize: "13px",
+            height: "33px",
+        },
+    
+        '& .MuiFormLabel-root' : {
+            fontSize: "13px",
+            lineHeight: "0.8",
+        },
+    
+        '& .MuiOutlinedInput-root': {
+            borderRadius : '3px'
+        }
     },
 }))
 
 const theme = createMuiTheme({
     palette: {
         primary: {
-            main: green[500],
-            light: green[200],
-            dark: green[900],
-            contrastText: green[800]
+            main: '#1890ff',
+            // light: '#1890ff',
+            // dark: green[900],
+            // contrastText: green[800]
         },
     },
     overrides: {
         MuiInputLabel: {
             root: {
                 "&$focused": {
-                    color: green[800],
-                }
+                    color: '#1890ff',
+                },
+            }
+        },
+        MuiOutlinedInput: {
+            root: {
+              "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
+                border: "1px solid",
+                borderColor: "#1890ff"
+              },
             }
         },
         MuiInput: {
             input: {
                 "&::placeholder": {
-                    color: green[800],
+                    color: '#1890ff',
                 },
             },
             underline: {
                 "&&&&::after": {
-                    borderBottom: `2px solid ${green[800]}`
-                }
+                    borderBottom: `2px solid #1890ff`
+                },
             }
         },
 
@@ -64,10 +85,11 @@ function InputField(props) {
     const { touched, errors } = form
     
     return (
-        // <MuiThemeProvider theme={theme}>
+        <MuiThemeProvider theme={theme}>
             <TextField
                 className={classes.root}
                 margin="dense"
+                {...field}
                 label={label ? label : null}
                 variant="outlined"
                 type={type}
@@ -75,8 +97,8 @@ function InputField(props) {
                 placeholder={placeholder}
                 name={name}
                 id={name}
-                {...field}
-            />
+                />
+        </MuiThemeProvider>
             // <FormControl
             //     variant='outlined'
             //     margin="dense" 
@@ -106,7 +128,6 @@ function InputField(props) {
             //     }
 
             // </FormControl>
-        // </MuiThemeProvider>
     )
 }
 

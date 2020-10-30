@@ -6,7 +6,22 @@ const useStyles = makeStyles((theme) => ({
     formControl: {
     //   margin: `0 ${theme.spacing(1)}px`, 
       width: '100%',
+
+      '& .MuiInputBase-root' : {
+        fontSize: "13px",
+        height: "33px",
+      },
+
+      '& .MuiFormLabel-root' : {
+        fontSize: "13px",
+        lineHeight: "0.8",
+      },
+
+      '& .MuiOutlinedInput-root': {
+        borderRadius : '3px'
+      }
     },
+
     selectEmpty: {
       marginTop: theme.spacing(2),
     },
@@ -17,67 +32,78 @@ function SelectField(props) {
     const { 
       form, field, label, disabled, valueLocation, 
       phuongXaList, quanHuyenList, thonList, trangThai,
-      gioiTinh, danToc
+      gioiTinh, danToc, readOnly, onChoose, authWardLocation, authDistrictLocation
     } = props
     const { name } = field
 
     const classes = useStyles()
 
-  const [state, setState] = React.useState({
-    age: valueLocation ? valueLocation : "",
-    name: 'hai',
-  });
+  const [state, setState] = React.useState(valueLocation ? valueLocation : '');
 
-  const handleChange = (event) => {
-    const name = event.target.name;
-    setState({
-      ...state,
-      [name]: event.target.value,
-    });
+  const handleSelect = (event) => {
+    const value = event.target.value
+    setState(value);
+    if(authDistrictLocation){
+      onChoose(value, "district");
+    }else if(authWardLocation){
+      onChoose(value, "ward");
+    }else{
+      // Do something...
+    }
+
+    const changeEvent = {
+      target: {
+        name: name,
+        value: value
+      }
+    }
+
+    field.onChange(changeEvent)
   };
-  
 
     return (
         <FormControl variant="outlined" margin="dense" className={classes.formControl}>
-        { label && <InputLabel htmlFor="outlined-age-native-simple">{label}</InputLabel> }
+        { label && <InputLabel id={name} htmlFor={name}>{label}</InputLabel> }
         <Select
-          native
-          value={state.age}
-          onChange={handleChange}
+          labelId={name}
+          id={name}
+          {...field}
+          onChange={handleSelect}
+          value={state}
+          name={name}
           label={label}
           disabled={disabled}
           inputProps={{
-            name: 'age',
-            id: 'outlined-age-native-simple',
+            readOnly: readOnly,
+          }}
+          MenuProps={{
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left"
+            },
+            getContentAnchorEl: null
           }}
         >
-          <option value=""></option>
-          {valueLocation ? (<option value={valueLocation}>{valueLocation}</option>) : null}
-          {phuongXaList ? (phuongXaList.map(({id_phuongxa, ten_phuongxa}) => (
-            <option value={id_phuongxa}>{ten_phuongxa}</option>
-          ))) : null}
-          {quanHuyenList ? (quanHuyenList.map(({id_quanhuyen, ten_quanhuyen}) => (
-            <option value={id_quanhuyen}>{ten_quanhuyen}</option>
-          ))) : null}
-          {thonList ? (thonList.map(({id_thon, tenthon}) => (
-            <option value={id_thon}>{tenthon}</option>
-          ))) : null}
-          {trangThai ? (
-            <>
-              <option value={0}>Sử dụng</option>
-              <option value={1}>Thùng rác</option>
-            </>
-          ) : null}
-          {gioiTinh ? (
-            <>
-              <option value="Nam">Nam</option>
-              <option value="Nữ">Nữ</option>
-              <option value="Chưa xác định">Chưa xác định</option>
-            </>
-          ) : null}
-          {danToc ? (danToc.map((dantoc) => (
-            <option value={dantoc}>{dantoc}</option>
-          ))) : null}
+          {/* <MenuItem value={""}></MenuItem> */}
+          {valueLocation && (<MenuItem value={valueLocation}>{valueLocation}</MenuItem>)}
+          {phuongXaList && (phuongXaList.map(({id_phuongxa, ten_phuongxa}) => (
+            <MenuItem value={id_phuongxa} key={id_phuongxa}>{ten_phuongxa}</MenuItem>
+          )))}
+          {quanHuyenList && (quanHuyenList.map(({id_quanhuyen, ten_quanhuyen}) => (
+            <MenuItem value={id_quanhuyen} key={id_quanhuyen}>{ten_quanhuyen}</MenuItem>
+          )))}
+          {thonList && (thonList.map(({id_thon, tenthon}) => (
+            <MenuItem value={id_thon} key={id_thon}>{tenthon}</MenuItem>
+          )))}
+          {(trangThai && trangThai.length>0) && (trangThai.map(({value, title}) => (
+            <MenuItem value={value} key={title}>{title}</MenuItem>
+          )))}
+          {(gioiTinh && gioiTinh.length>0) && (gioiTinh.map(({value, title}) => (
+            <MenuItem value={value} key={title}>{title}</MenuItem>
+          )))}
+          {danToc && (danToc.map((dantoc) => (
+            <MenuItem value={dantoc}>{dantoc}</MenuItem>
+          )))}
         </Select>
       </FormControl>
     )
@@ -89,16 +115,16 @@ SelectField.propTypes = {
 
     label: PropTypes.string,
     disabled: PropTypes.bool,
-    trangThai: PropTypes.bool,
-    gioiTinh: PropTypes.bool,
+    trangThai: PropTypes.array,
+    gioiTinh: PropTypes.array,
     danToc: PropTypes.array,
 }
 
 SelectField.defaultProps = {
     label: '',
     disabled: null,
-    trangThai: false,
-    gioiTinh: false,
+    trangThai: null,
+    gioiTinh: null,
     danToc: null,
 }
 

@@ -1,0 +1,28 @@
+.localAdministration {
+    display : flex;
+    flex-direction: column;
+    padding: 0 0 0 4rem;
+    background-color: #f0f0d0;
+
+    &__title {
+        background-color: #35baf6;
+        color: #FFF;
+        padding: 0.6rem;
+        font-size: 18px;
+        display: flex;
+        flex-wrap: wrap;
+
+        &--icon {
+            position: relative;
+            top: 6px;
+        }
+
+        & span {
+            margin-left: 10px;
+        }
+    }
+
+    &__searchForm {
+        height: auto;
+    }
+}

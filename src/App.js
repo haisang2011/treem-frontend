@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
-import { BrowserRouter, Switch, Redirect, Route } from 'react-router-dom';
-import { loadUser } from './actions/authAction';
+import React from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './assets/css/style.scss';
 import NotFound from './components/NotFound';
 import SignIn from './features/SignIn';
@@ -8,12 +7,9 @@ import Main from './wrapper/Main';
 import { connect } from 'react-redux'
 import PrivateRoute from './wrapper/PrivateRoute';
 import PublicRoute from './wrapper/PublicRoute';
+import ManageSpecialCircumstances from './features/ManageSpecialCircumstances';
 
 function App({ isAuthenticated, isLoading }) {
-
-  // useEffect(() => {
-  //   loadUser()
-  // }, [])
 
   return (
     <BrowserRouter>
@@ -28,6 +24,54 @@ function App({ isAuthenticated, isLoading }) {
           isAuthenticated={isAuthenticated}
         />
 
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/hoancanhdacbiet'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/nguycohoancanhdacbiet'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/hoancanhkhac'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/hinhthuctrogiup'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/quantringuoidung'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/quantridiaphuong'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
         <PublicRoute
           exact
           component={SignIn}
@@ -36,7 +80,7 @@ function App({ isAuthenticated, isLoading }) {
           isAuthenticated={isAuthenticated}
         />
 
-        {/* <Route exact path='/' component={SignIn} /> */}
+        {/* <Route exact path='/hoancanhdacbiet' component={ManageSpecialCircumstances} /> */}
         {/* <Route path='/quanlytreem' component={Main} /> */}
         <Route component={NotFound} />
 

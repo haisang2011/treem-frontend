@@ -1,4 +1,8 @@
 import React from 'react';
+import './Table.scss';
+import Moment from 'react-moment';
+import Caregiver from '../../../../helpers/mergeFatherMotherToOne';
+import CustomAddress from '../../../../helpers/customLengthAddress';
 import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -14,11 +18,17 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import { Button, TableHead } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import DescriptionIcon from '@material-ui/icons/Description';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
-    marginLeft: theme.spacing(2.5),
+    // marginLeft: theme.spacing(2.5),
   },
 }));
 
@@ -26,6 +36,8 @@ function TablePaginationActions(props) {
   const classes = useStyles1();
   const theme = useTheme();
   const { count, page, rowsPerPage, onChangePage } = props;
+
+  console.log(count);
 
   const handleFirstPageButtonClick = (event) => {
     onChangePage(event, 0);
@@ -80,94 +92,135 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-function createData(name, calories, fat) {
-  return { name, calories, fat };
-}
+const columns = [
+  "Mã gia đình",
+  "Họ và tên",
+  "Ngày sinh",
+  "Họ tên cha/mẹ hoặc Người nuôi dưỡng",
+  "Dân tộc",
+  "Giới tính",
+  "Địa chỉ"
+]
 
-const rows = [
-  createData('Cupcake', 305, 3.7),
-  createData('Donut', 452, 25.0),
-  createData('Eclair', 262, 16.0),
-  createData('Frozen yoghurt', 159, 6.0),
-  createData('Gingerbread', 356, 16.0),
-  createData('Honeycomb', 408, 3.2),
-  createData('Ice cream sandwich', 237, 9.0),
-  createData('Jelly Bean', 375, 0.0),
-  createData('KitKat', 518, 26.0),
-  createData('Lollipop', 392, 0.2),
-  createData('Marshmallow', 318, 0),
-  createData('Nougat', 360, 19.0),
-  createData('Oreo', 437, 18.0),
-].sort((a, b) => (a.calories < b.calories ? -1 : 1));
+
+/* sort((a, b) => (a.calories < b.calories ? -1 : 1)); */
 
 const useStyles2 = makeStyles({
   table: {
-    minWidth: 500,
+    minWidth: "120%",
   },
+
+  container: {
+    height: 400,
+
+    "& .MuiTableCell-root" : {
+      padding : "8px",
+    }
+  }
 });
 
-export default function CustomPaginationActionsTable() {
+export default function CustomPaginationActionsTable({ childrenList, totalChildrenList, onHandlePagination }) {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  // const emptyRows = rowsPerPage - Math.min(rowsPerPage, childrenList.length - page * rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    onHandlePagination(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (event) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
+
+
+  // React.useEffect(() => {
+  //   onHandlePagination(page);
+  // },[page])
 
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="custom pagination table">
+    <div className="table-quanlytreem">
+    <TableContainer component={Paper} className={classes.container}>
+      <Table stickyHeader className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            {columns.map((column) => (
+              <TableCell key={column}>{column}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
         <TableBody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
+          {childrenList.length>0 && childrenList.map((row, index) => (
+            <TableRow key={row.id_treem} style={(index % 2) ? { backgroundColor: "#e9e9e9" } : { backgroundColor: "white" }}>
+              <TableCell style={{ width: 110 }}>
+                <AddIcon />
+                <EditIcon />
+                <DeleteIcon />
               </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.calories}
+              <TableCell style={{ width: 120 }}>
+                {row.id_giadinh}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.fat}
+              <TableCell style={{ width: 180 }}>
+                {row.hoten}
+              </TableCell>
+              <TableCell>
+                <Moment format="DD/MM/YYYY">
+                  {row.ngaysinh}
+                </Moment>
+              </TableCell>
+              <TableCell style={{ width: 320}}>
+                {Caregiver(row.hotencha,row.hotenme,row.nguoinuoiduong)}
+              </TableCell>
+              <TableCell style={{ width: 100 }}>
+                {row.dantoc}
+              </TableCell>
+              <TableCell style={{ width: 100 }}>
+                {row.gioitinh}
+              </TableCell>
+              <TableCell style={{ width: 390 }}>
+                {CustomAddress(row.tenthon, row.ten_phuongxa, row.ten_quanhuyen, row.ten_tinhthanhpho,50)}
               </TableCell>
             </TableRow>
           ))}
 
-          {emptyRows > 0 && (
+          {/* {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
-          )}
+          )} */}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={3}
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                inputProps: { 'aria-label': 'rows per page' },
-                native: true,
-              }}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
       </Table>
     </TableContainer>
+    <div className="table-quanlytreem__pagination">
+      <div className="table-quanlytreem__pagination--button">
+        <Button variant="contained" style={{textTransform:"none", marginRight:"4px"}} color="primary">
+          <DescriptionIcon />
+          Nhập từ Excel
+        </Button>
+        <Button variant="contained" style={{textTransform:"none"}} color="secondary">
+          <RemoveIcon />
+          Thùng rác
+        </Button>
+      </div>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+        colSpan={3}
+        count={totalChildrenList}
+        rowsPerPage={10}
+        page={page}
+        SelectProps={{
+          inputProps: { 'aria-label': 'rows per page' },
+          native: true,
+        }}
+        onChangePage={handleChangePage}
+        // onChangeRowsPerPage={handleChangeRowsPerPage}
+        ActionsComponent={TablePaginationActions}
+      />
+    </div>
+    </div>
   );
 }

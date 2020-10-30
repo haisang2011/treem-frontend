@@ -1,0 +1,11 @@
+.manageOtherCircumstances {
+    display : flex;
+    flex-direction: column;
+    padding: 0 0 0 4rem;
+    border: 1px solid;
+    background-color: #f0f0d0;
+
+    &__searchForm {
+        height: auto;
+    }
+}

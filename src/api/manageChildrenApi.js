@@ -1,5 +1,6 @@
 import axiosClient from "./axiosClient";
 import store from '../app/store';
+import queryString from 'query-string';
 
 const URL_API = '/quan-ly-tre-em';
 
@@ -11,7 +12,7 @@ const tokenConfig = (getState) => {
   const config = {
       headers : {
           'Content-type': 'application/json'
-      }
+      },
   }
 
   /* If token, add to headers */
@@ -29,6 +30,26 @@ const manageChidlrenApi = {
     return axiosClient.get(
         url,
         tokenConfig(store.getState)
+    );
+  },
+  getDataPaginationSearch: () => {
+    const url = `/quan-ly-tre-em/timkiem`;
+    return axiosClient.get(
+        url,
+        tokenConfig(store.getState)
+    );
+  },
+  getDataPaginationSearchHaveQuery: (params) => {
+    const url = `/quan-ly-tre-em/timkiem`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.get(
+        url,
+        {
+          params,
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
     );
   },
 }

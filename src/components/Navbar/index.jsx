@@ -1,73 +1,11 @@
 import React from 'react'
 import './Navbar.scss';
-import PropTypes from 'prop-types'
-import { AppBar, Tabs, Tab, makeStyles, Menu, MenuItem, List, ListItem, ListItemText, Collapse } from '@material-ui/core'
-import { NavLink } from 'react-router-dom';
+// import PropTypes from 'prop-types'
+import { AppBar, makeStyles, List, ListItem, ListItemText, Collapse, ClickAwayListener } from '@material-ui/core'
+import { Link, NavLink } from 'react-router-dom';
+import { navLinks } from '../../helpers/getNavLinks'
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-const navLinks = [
-    {
-        title : "Hệ thống",
-        path : '/', 
-        dropdown : [
-            {
-                subTitle : "Nhật ký hoạt động"
-            },
-            {
-                subTitle : "Đăng xuất"
-            }
-        ]
-    },
-    {
-        title : "Quản lý hồ sơ trẻ em",
-        path : '/',
-        dropdown : [
-            {
-                subTitle : "Tìm kiếm thông tin trẻ em"
-            },
-        ]
-    },
-    {
-        title : "Hoàn cảnh đặc biệt",
-        path : '/'
-    },
-    {
-        title : "Nguy cơ rơi HCĐB",
-        path : '/'
-    },
-    {
-        title : "Hoàn cảnh khác",
-        path : "/"
-    },
-    {
-        title : "Hình thức trợ giúp",
-        path : "/"
-    },
-    {
-        title : "Khai thác trẻ em",
-        path : "/",
-        dropdown : [
-            {
-                subTitle : "Danh sách trẻ em"
-            },
-            {
-                subTitle : "Danh sách trẻ em bình thường"
-            },
-            {
-                subTitle : "Danh sách trẻ em theo đối tượng"
-            },
-            {
-                subTitle : "Danh sách hộ gia đình"
-            },
-            {
-                subTitle : "Tổng hợp báo cáo"
-            },
-        ]
-    },
-    {
-        title : "Trợ giúp",
-        path : "/"
-    }
-]
 
 const useStyles = makeStyles(theme => ({
     root : {
@@ -81,6 +19,18 @@ const useStyles = makeStyles(theme => ({
     textLink : {
         textDecoration: `none`,
         color: `#FFFFFF`
+    },
+    positionLink : { 
+        position: "relative"
+    },
+    positionSubLink : {
+        position: "absolute",
+        top: "100%",
+        left: 0,
+        backgroundColor : "#444d58",
+        color: "#FFFFFF",
+        zIndex: 100,
+        width: "200%",
     }
 }))
 
@@ -93,48 +43,75 @@ function Navbar(props) {
 
     const handleListItemClick = (event, index, title) => {
         setSelectedIndex(index);
-        (item && item[title]) ? setItem({...item, [title]: !item[title]}) : setItem({...item, [title]: true})
+        (item && item[title]) ? setItem({[title]: !item[title]}) : setItem({[title]: true})
     };
-
-    (item && console.log(item["Hệ thống"]))
+    
+    const handleOnClickAway = (event) => {
+        setSelectedIndex(null);
+        setItem(null);
+    };
 
     return (
         <div className="navbar">
+            <ClickAwayListener onClickAway={handleOnClickAway}>
             <AppBar position="static" className={classes.root}>
-                <List component="nav" aria-labelledby="main navigation" className={classes.list}>
+                <List component="ul" aria-labelledby="main navigation" className={classes.list}>
                     {navLinks.map(({ title, path, dropdown }, idx) => (
-                    <div>
-                    {/* <NavLink to={path} key={title} className={classes.textLink}> */}
-                        <ListItem 
+                    <div key={idx}>
+                        { path ? (
+                            <ListItem
+                                className={classes.positionLink}
+                                button
+                                selected={selectedIndex === idx}
+                                onClick={(event) => handleListItemClick(event, idx, title)}    
+                                >
+                                <NavLink to={path} key={title} className={classes.textLink}>
+                                    <ListItemText primary={title} />
+                                    { dropdown && <ArrowDropDownIcon style={{color:"#FFFFFF"}}/> }
+                                </NavLink>
+                            </ListItem>
+                        ) 
+                        : 
+                        (
+                            <ListItem
                             button
                             selected={selectedIndex === idx}
                             onClick={(event) => handleListItemClick(event, idx, title)}    
-                        >
-                        <ListItemText primary={title} />
-                        </ListItem>
-                    {/* </NavLink> */}
-                    { dropdown && (
-                        <Collapse 
-                            component="li" 
-                            timeout="auto" 
-                            unmountOnExit
-                            in={item && item[title]}
-                        >
-                            <List disablePadding>
-                                {dropdown.map(({subTitle}) => {
-                                return (
-                                    <ListItem button>
-                                    <ListItemText primary={subTitle} />
-                                    </ListItem> 
-                                    )
-                                })}
-                            </List>
-                        </Collapse>
-                    ) }
+                            >
+                            <ListItemText primary={title} />
+                            { dropdown && <ArrowDropDownIcon style={{color:"#FFFFFF"}}/> }
+                            { dropdown && (
+                                <Collapse 
+                                    timeout="auto" 
+                                    unmountOnExit
+                                    in={item ? item[title] : null}
+                                >
+                                    <List
+                                        className={classes.positionSubLink}
+                                    >
+                                        {dropdown.map(({subTitle, subPath}) => {
+                                            return (
+                                                
+                                                <ListItem
+                                                    key={subTitle}
+                                                    button
+                                                >
+                                                    <NavLink to={`${subPath}`} className={classes.textLink}>
+                                                        <ListItemText primary={subTitle} />
+                                                    </NavLink>
+                                                </ListItem>
+                                            )
+                                        })}
+                                    </List>
+                                </Collapse>
+                            )}
+                            </ListItem>
+                        )}
                     </div>
                     ))}
                 </List>
             </AppBar>
+            </ClickAwayListener>
         </div>
     )
 }
@@ -144,4 +121,3 @@ Navbar.propTypes = {
 }
 
 export default Navbar
-

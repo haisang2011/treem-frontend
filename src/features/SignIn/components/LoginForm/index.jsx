@@ -1,24 +1,24 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './LoginForm.scss';
-import { TextField, MenuItem, Button, makeStyles } from '@material-ui/core'
-import { FastField, Formik, Form, Field } from 'formik'
+import { Button } from '@material-ui/core'
+import { FastField, Formik, Form } from 'formik'
 import InputField from '../../../../custom-fields/InputField';
 import SignInSchema from '../../../../validation/signIn';
 
 
 // Custom style for Form //
-const useStyles = makeStyles(theme => ({
-    root: {
-        '&':{
-            paddingBottom: 15
-        },
-        '& > *': {
-            display: "flex",
-            flexDirection: 'column',
-            margin: theme.spacing(3),
-        }
-    },
-}))
+// const useStyles = makeStyles(theme => ({
+//     root: {
+//         '&':{
+//             paddingBottom: 15
+//         },
+//         '& > *': {
+//             display: "flex",
+//             flexDirection: 'column',
+//             margin: theme.spacing(3),
+//         }
+//     },
+// }))
 
 function LoginForm({ initialValues, onSubmitForm }) {
 
@@ -35,7 +35,6 @@ function LoginForm({ initialValues, onSubmitForm }) {
             onSubmit={onSubmitFormik}
         >
             {formikProps => {
-                const { values, touched, errors } = formikProps
 
                 return (
                     <Form autoComplete="off" className="loginForm__formik">

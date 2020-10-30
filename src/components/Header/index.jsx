@@ -47,7 +47,7 @@ function Header({ logout, username }) {
                 <NavLink
                     className="header__link"
                     activeClassName="header__link--active"
-                    to="/"
+                    to="/hoancanhdacbiet"
                     exact
                 >
                     <img
