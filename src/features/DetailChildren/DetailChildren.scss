@@ -1,0 +1,15 @@
+.detailChildren {
+    display: flex;
+    flex-direction: column;
+
+    &__title {
+        padding: 0.6rem;
+        background-color: #35baf6;
+        color: #FFF;
+        font-size: 16px;
+    }
+
+    &__main {
+        padding: 10px;
+    }
+}

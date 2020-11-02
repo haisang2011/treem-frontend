@@ -79,11 +79,12 @@ function InputField(props) {
             label, 
             placeholder,
             variant,
-            isFieldLogin, 
+            isFieldLogin,
+            disabled,
     } = props
-    const { name } = field
+    const { name, value } = field
     const { touched, errors } = form
-    
+    console.log(field)
     return (
         <MuiThemeProvider theme={theme}>
             <TextField
@@ -97,6 +98,7 @@ function InputField(props) {
                 placeholder={placeholder}
                 name={name}
                 id={name}
+                disabled={disabled}
                 />
         </MuiThemeProvider>
             // <FormControl

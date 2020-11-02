@@ -1,14 +1,19 @@
+const ROLE_CITY = 1;
+const ROLE_WARD = 2;
+
 export const navLinks = [
     {
         title : "Hệ thống",
         dropdown : [
             {
                 subTitle : "Quản trị người dùng",
-                subPath : '/quantringuoidung'
+                subPath : '/quantringuoidung',
+                role : ROLE_CITY,
             },
             {
                 subTitle : "Quản trị địa phương",
-                subPath : '/quantridiaphuong'
+                subPath : '/quantridiaphuong',
+                role : ROLE_WARD
             },
             {
                 subTitle : "Nhật ký hoạt động",
@@ -23,10 +28,12 @@ export const navLinks = [
         title : "Quản lý hồ sơ trẻ em",
         dropdown : [
             {
-                subTitle : "Nhập liệu trẻ em khác GĐ"
+                subTitle : "Nhập liệu trẻ em khác GĐ",
+                role : ROLE_WARD
             },
             {
-                subTitle : "Nhập liệu trẻ em cùng GĐ"
+                subTitle : "Nhập liệu trẻ em cùng GĐ",
+                role : ROLE_WARD
             },
             {
                 subTitle : "Tìm kiếm thông tin trẻ em",

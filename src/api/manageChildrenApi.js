@@ -52,6 +52,18 @@ const manageChidlrenApi = {
         }
     );
   },
+  getDataToShowDetailChildren: (id) => {
+    const url = `/quan-ly-tre-em/detail/${id}`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.get(
+        url,
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
 }
 
 export default manageChidlrenApi;

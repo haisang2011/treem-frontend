@@ -11,25 +11,34 @@ import UserAdministration from '../../features/userAdministration'
 import LocalAdministration from '../../features/LocalAdministration'
 import { Route, Switch, useRouteMatch } from 'react-router-dom'
 import { connect } from 'react-redux';
+import DetailChildren from '../../features/DetailChildren';
 
-function Main({ isAuthenticated }) {
+function Main({ isAuthenticated, locationUser, isShowDetailChildren }) {
 
     const { path } = useRouteMatch()
 
     return (
         <Fragment>
-            <Header />
-            <Navbar />
 
-            <Switch>
-                <Route exact path="/quanlytreem" component={ManageChildren} />
-                <Route exact path="/hoancanhdacbiet" component={ManageSpecialCircumstances} />
-                <Route exact path="/nguycohoancanhdacbiet" component={ManageRiskSpecial} />
-                <Route exact path="/hoancanhkhac" component={ManageOtherCircumstances} />
-                <Route exact path="/hinhthuctrogiup" component={ManageFormOfHelp} />
-                <Route exact path="/quantringuoidung" component={UserAdministration} />
-                <Route exact path="/quantridiaphuong" component={LocalAdministration} />
-            </Switch>
+            { isShowDetailChildren ? <DetailChildren /> : (
+                <>
+                    <Header />
+                    <Navbar
+                        locationUser={locationUser}
+                    />
+
+                    <Switch>
+                        <Route exact path="/quanlytreem" component={ManageChildren} />
+                        <Route exact path="/hoancanhdacbiet" component={ManageSpecialCircumstances} />
+                        <Route exact path="/nguycohoancanhdacbiet" component={ManageRiskSpecial} />
+                        <Route exact path="/hoancanhkhac" component={ManageOtherCircumstances} />
+                        <Route exact path="/hinhthuctrogiup" component={ManageFormOfHelp} />
+                        <Route exact path="/quantringuoidung" component={UserAdministration} />
+                        <Route exact path="/quantridiaphuong" component={LocalAdministration} />
+                    </Switch>
+                </>
+            ) }
+
         </Fragment>
     )
 }
@@ -40,6 +49,8 @@ Main.propTypes = {
 
 const mapStateToProps = state => ({
     isAuthenticated : state.auth.isAuthenticated,
+    locationUser : state.auth.locationUser,
+    isShowDetailChildren : state.status.isShowDetailChildren,
 })
 
 export default connect(mapStateToProps, null)(Main)

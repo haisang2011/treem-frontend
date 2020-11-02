@@ -1,12 +1,13 @@
 import React from 'react'
 import Table from './components/Table';
 import PropTypes from 'prop-types'
+import DetailChildren from '../DetailChildren';
 import './ManageChildren.scss';
 import { CssBaseline, Paper } from '@material-ui/core';
 import SearchForm from './components/SearchForm';
 import { connect } from 'react-redux';
 import { fetchWardRequest, fetchVillageRequest } from '../../actions/commonAction';
-import { fetchDataRequest } from '../../actions/manageChildrenAction';
+import { fetchDataRequest, fetchDataDetailChildren } from '../../actions/manageChildrenAction';
 
 const tokenConfig = (getState) => {
 
@@ -31,9 +32,8 @@ const tokenConfig = (getState) => {
 function ManageChildren({ 
     locationUser, quanhuyenList, thonList, phuongxaList,
     fetchWardRequest, fetchVillageRequest, childrenList,
-    totalChildrenList, fetchDataRequest,
+    totalChildrenList, fetchDataRequest, fetchDataDetailChildren,
 }) {
-
 
     const [values, setValues] = React.useState({
         tinhthanhpho: '',
@@ -62,7 +62,6 @@ function ManageChildren({
     }, [values])
 
     const onSubmitForm = (value) => {
-
         setValues({
             tinhthanhpho: value.tinhthanhpho ? value.tinhthanhpho : '',
             quanhuyen: value.quanhuyen ? value.quanhuyen : '',
@@ -76,25 +75,18 @@ function ManageChildren({
             gioitinh : value.gioitinh ? value.gioitinh : '',
             search : null,
         })
-
-        // fetchDataRequest(values);
     }
 
     const onHandleButtonPagination = (pageNumber) => {
-
         setValues({
             ...values,
             search : pageNumber+1,
         })
-
-        // const params = {
-        //     search : pageNumber + 1,
-        // }
-
-        // fetchDataRequest(values)
     }
 
-    console.log("Children List : ", childrenList);
+    const onHandleEdit = (id) => {
+        fetchDataDetailChildren(id)
+    }
 
     return (
         <div className="manageChildren">
@@ -116,6 +108,7 @@ function ManageChildren({
                         childrenList={childrenList}
                         totalChildrenList={totalChildrenList}
                         onHandlePagination={onHandleButtonPagination}
+                        onHandleEdit={onHandleEdit}
                     />
                 </Paper>
             </div>
@@ -137,5 +130,5 @@ const mapStateToProps = state => ({
     totalChildrenList : state.manageChildren.totalChildrenList,
 })
 
-export default connect(mapStateToProps, { fetchWardRequest, fetchVillageRequest, fetchDataRequest })(ManageChildren)
+export default connect(mapStateToProps, { fetchWardRequest, fetchVillageRequest, fetchDataRequest, fetchDataDetailChildren })(ManageChildren)
 

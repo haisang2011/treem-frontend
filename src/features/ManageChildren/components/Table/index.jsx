@@ -24,6 +24,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DescriptionIcon from '@material-ui/icons/Description';
 import RemoveIcon from '@material-ui/icons/Remove';
+import Row from '../Row';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -119,7 +120,7 @@ const useStyles2 = makeStyles({
   }
 });
 
-export default function CustomPaginationActionsTable({ childrenList, totalChildrenList, onHandlePagination }) {
+export default function CustomPaginationActionsTable({ childrenList, totalChildrenList, onHandlePagination, onHandleEdit }) {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -136,11 +137,6 @@ export default function CustomPaginationActionsTable({ childrenList, totalChildr
   //   setPage(0);
   // };
 
-
-  // React.useEffect(() => {
-  //   onHandlePagination(page);
-  // },[page])
-
   return (
     <div className="table-quanlytreem">
     <TableContainer component={Paper} className={classes.container}>
@@ -155,36 +151,12 @@ export default function CustomPaginationActionsTable({ childrenList, totalChildr
         </TableHead>
         <TableBody>
           {childrenList.length>0 && childrenList.map((row, index) => (
-            <TableRow key={row.id_treem} style={(index % 2) ? { backgroundColor: "#e9e9e9" } : { backgroundColor: "white" }}>
-              <TableCell style={{ width: 110 }}>
-                <AddIcon />
-                <EditIcon />
-                <DeleteIcon />
-              </TableCell>
-              <TableCell style={{ width: 120 }}>
-                {row.id_giadinh}
-              </TableCell>
-              <TableCell style={{ width: 180 }}>
-                {row.hoten}
-              </TableCell>
-              <TableCell>
-                <Moment format="DD/MM/YYYY">
-                  {row.ngaysinh}
-                </Moment>
-              </TableCell>
-              <TableCell style={{ width: 320}}>
-                {Caregiver(row.hotencha,row.hotenme,row.nguoinuoiduong)}
-              </TableCell>
-              <TableCell style={{ width: 100 }}>
-                {row.dantoc}
-              </TableCell>
-              <TableCell style={{ width: 100 }}>
-                {row.gioitinh}
-              </TableCell>
-              <TableCell style={{ width: 390 }}>
-                {CustomAddress(row.tenthon, row.ten_phuongxa, row.ten_quanhuyen, row.ten_tinhthanhpho,50)}
-              </TableCell>
-            </TableRow>
+            <Row
+              key={row.id_treem}
+              index={index}
+              row={row}
+              onHandleEdit={onHandleEdit}
+            />
           ))}
 
           {/* {emptyRows > 0 && (

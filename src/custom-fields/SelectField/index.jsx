@@ -30,15 +30,16 @@ const useStyles = makeStyles((theme) => ({
 function SelectField(props) {
 
     const { 
-      form, field, label, disabled, valueLocation, 
+      form, field, label, disabled, valueLocation, valueDetail,
       phuongXaList, quanHuyenList, thonList, trangThai,
-      gioiTinh, danToc, readOnly, onChoose, authWardLocation, authDistrictLocation
+      gioiTinh, danToc, readOnly, onChoose, authWardLocation, authDistrictLocation,
+      tinhTrangHocTap, lopHocCaoNhat,
     } = props
     const { name } = field
 
     const classes = useStyles()
 
-  const [state, setState] = React.useState(valueLocation ? valueLocation : '');
+  const [state, setState] = React.useState(valueLocation ? valueLocation : (valueDetail ? valueDetail : ''));
 
   const handleSelect = (event) => {
     const value = event.target.value
@@ -103,6 +104,12 @@ function SelectField(props) {
           )))}
           {danToc && (danToc.map((dantoc) => (
             <MenuItem value={dantoc}>{dantoc}</MenuItem>
+          )))}
+          {tinhTrangHocTap && (tinhTrangHocTap.map(({value, title}) => (
+            <MenuItem value={value}>{title}</MenuItem>
+          )))}
+          {lopHocCaoNhat && (lopHocCaoNhat.map(({value, title}) => (
+            <MenuItem value={value}>{title}</MenuItem>
           )))}
         </Select>
       </FormControl>

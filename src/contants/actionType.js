@@ -19,6 +19,7 @@ const ManageChildren = {
     FETCH_RISK_SPECIAL_CIRCUMSTANCES : 'fetch_risk_special_circumstances',
     FETCH_OTHER_CIRCUMSTANCES : 'fetch_other_circumstances',
     FETCH_FORM_OF_HELP : 'fetch_form_of_help',
+    FETCH_DATA_DETAIL_CHILDREN : 'fetch_data_detail_children',
 }
 
 const CommonList = {
@@ -40,6 +41,11 @@ const ManageLocal = {
     FETCH_DATA_LOCAL : 'fetch_data_local',
 }
 
+const Status = {
+    OPEN_DETAIL_CHILDREN : 'open_detail_children',
+    CLOSE_DETAIL_CHILDREN : 'close_detail_children',
+}
+
 export {
     Auth,
     Error,
@@ -47,4 +53,5 @@ export {
     CommonList,
     ManageAccount,
     ManageLocal,
+    Status
 }

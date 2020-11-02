@@ -1,4 +1,4 @@
-import { ManageChildren, Auth } from '../contants/actionType';
+import { ManageChildren, Auth, Status } from '../contants/actionType';
 import SpecialCircumstancesApi from '../api/manageChildrenSpecialCircumstancesApi';
 import RiskSpecialCircumstancesApi from '../api/manageChildrenRiskSpecialApi';
 import ManageChidlrenApi from '../api/manageChildrenApi';
@@ -134,4 +134,24 @@ export const fetchDataFormOfHelpRequest = (query) => (dispatch) => {
                             //      type: Auth.AUTH_ERROR
                             //  })
                            })
+}
+
+
+/* Detail Children */
+export const fetchDataDetailChildren = (id) => dispatch => {
+    ManageChidlrenApi.getDataToShowDetailChildren(id)
+                     .then(res => {
+                        dispatch({
+                            type : ManageChildren.FETCH_DATA_DETAIL_CHILDREN,
+                            payload : res,
+                        })
+
+                        dispatch({
+                            type : Status.OPEN_DETAIL_CHILDREN,
+                            payload : true
+                        })
+                     })
+                     .catch(err => {
+                        dispatch(returnErrors(err.code, err.message))
+                     })
 }

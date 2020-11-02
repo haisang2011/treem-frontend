@@ -11,6 +11,7 @@ const initialState = {
     totalRiskSpecial : null,
     totalOtherCircumstances : null,
     totalFormOfHelp : null,
+    detailChildrenInfo : null,
 }
 
 export default (state=initialState, action) => {
@@ -44,6 +45,11 @@ export default (state=initialState, action) => {
                 ...state,
                 formOfHelp : [...action.data.payload],
                 totalFormOfHelp : action.data.total,
+            };
+        case ManageChildren.FETCH_DATA_DETAIL_CHILDREN:
+            return {
+                ...state,
+                detailChildrenInfo : {...action.payload.result},
             };
         default:
             return state;

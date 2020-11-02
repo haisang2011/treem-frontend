@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function Navbar(props) {
+function Navbar({ locationUser }) {
 
     const classes = useStyles()
 
@@ -89,18 +89,48 @@ function Navbar(props) {
                                     <List
                                         className={classes.positionSubLink}
                                     >
-                                        {dropdown.map(({subTitle, subPath}) => {
-                                            return (
-                                                
-                                                <ListItem
-                                                    key={subTitle}
-                                                    button
-                                                >
-                                                    <NavLink to={`${subPath}`} className={classes.textLink}>
-                                                        <ListItemText primary={subTitle} />
-                                                    </NavLink>
-                                                </ListItem>
-                                            )
+                                        {dropdown.map(({subTitle, subPath, role}) => {
+                                            if(locationUser.id_tinh && !locationUser.id_quan && !locationUser.id_xa){
+                                                if(role && role===1){
+                                                    return (
+                                                        <ListItem
+                                                            key={subTitle}
+                                                            button
+                                                        >
+                                                            <NavLink to={`${subPath}`} className={classes.textLink}>
+                                                                <ListItemText primary={subTitle} />
+                                                            </NavLink>
+                                                        </ListItem>
+                                                    )
+                                                }
+                                            }
+                                            if(locationUser.id_tinh && locationUser.id_quan && locationUser.id_xa){
+                                                if(role && role===2){
+                                                    return (
+                                                        <ListItem
+                                                            key={subTitle}
+                                                            button
+                                                        >
+                                                            <NavLink to={`${subPath}`} className={classes.textLink}>
+                                                                <ListItemText primary={subTitle} />
+                                                            </NavLink>
+                                                        </ListItem>
+                                                    )
+                                                }
+                                            }
+
+                                            if(!role){
+                                                return (
+                                                    <ListItem
+                                                        key={subTitle}
+                                                        button
+                                                    >
+                                                        <NavLink to={`${subPath}`} className={classes.textLink}>
+                                                            <ListItemText primary={subTitle} />
+                                                        </NavLink>
+                                                    </ListItem>
+                                                )
+                                            }
                                         })}
                                     </List>
                                 </Collapse>

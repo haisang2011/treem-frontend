@@ -33,14 +33,14 @@ const useStyles = makeStyles((theme) => ({
 function DateField(props) {
 
     const { 
-      form, field, label, placeholder
+      form, field, label, placeholder, valueDate
     } = props
 
     const { name } = field
 
     const classes = useStyles()
 
-    const [selectedDate, handleDateChange] = React.useState(new Date());
+    const [selectedDate, handleDateChange] = React.useState(valueDate);
 
     const onHandleDateChangeSubmit = (date) => {
       handleDateChange(date)
