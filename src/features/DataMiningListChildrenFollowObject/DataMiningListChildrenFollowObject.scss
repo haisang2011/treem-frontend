@@ -1,0 +1,19 @@
+.dataMiningListChildrenFollowObject {
+    display : flex;
+    flex-direction: column;
+    padding: 0 0 0 4rem;
+    background-color: #f0f0d0;
+    height: 79.5vh;
+
+    &__searchForm {
+        height: auto;
+    }
+
+    &__dataTable {
+
+        &--paper {
+            height: 62vh;
+            background-color: #f0f0d0 !important;
+        }
+    }
+}

@@ -4,20 +4,32 @@ import PropTypes from 'prop-types'
 import { CssBaseline, Paper } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchWardRequest, fetchVillageRequest } from '../../actions/commonAction';
-import { fetchDataRiskSpecialCircumstancesRequest } from '../../actions/manageChildrenAction';
+import { fetchDataRiskSpecialCircumstancesRequest, downloadFileExcelDataNCHCDBRequest } from '../../actions/manageChildrenAction';
 import SearchForm from '../ManageRiskSpecial/components/SearchForm';
 import Table from '../ManageRiskSpecial/components/Table';
+import Snackbars from '../../components/Snackbars';
 
 function ManageRiskSpecial({
     locationUser, quanhuyenList, thonList, phuongxaList,
     fetchWardRequest, fetchVillageRequest, totalRiskSpecial,
-    listNCHCDB, riskSpecial, fetchDataRiskSpecialCircumstancesRequest
+    listNCHCDB, riskSpecial, fetchDataRiskSpecialCircumstancesRequest,
+    downloadFileExcelDataNCHCDBRequest,
 }) {
 
+    const {
+        id_tinh, id_quan, id_xa,
+        thanhpho, quanhuyen, phuongxa
+    } = locationUser
+
+    const [snackbars, setSnackbars] = React.useState(false);
+    const onHandleSnackbars = () => {
+        setSnackbars(false);
+    }
+
     const [values, setValues] = React.useState({
-        thanhpho: '',
-        huyen: '',
-        xa: '',
+        thanhpho: id_tinh || '',
+        huyen: id_quan || '',
+        xa: id_xa || '',
         thon : '',
         hoancanh : '',
         tentreem: '',
@@ -39,11 +51,12 @@ function ManageRiskSpecial({
         }
     }
 
-    const onSubmitForm = (value) => {
-        setValues({
+    const onSubmitForm = (value, statusSubmit) => {
+
+        const dataSubmit = {
             thanhpho: value.tinhthanhpho ? value.tinhthanhpho : '',
             huyen: value.quanhuyen ? value.quanhuyen : '',
-            xa: value.quanhuyen ? value.phuongxa : '',
+            xa: value.phuongxa ? value.phuongxa : '',
             thon : value.thon ? value.thon : '',
             hoancanh : value.chitieu ? value.chitieu : '',
             tentreem : value.hoten ? value.hoten : '',
@@ -51,7 +64,30 @@ function ManageRiskSpecial({
             timestart : value.ngaybatdau ? value.ngaybatdau : '',
             timefinish : value.ngayketthuc ? value.ngayketthuc : '',
             page : null,
-        })
+        }
+
+        if(statusSubmit===1){
+            setValues({
+                thanhpho: value.tinhthanhpho ? value.tinhthanhpho : '',
+                huyen: value.quanhuyen ? value.quanhuyen : '',
+                xa: value.phuongxa ? value.phuongxa : '',
+                thon : value.thon ? value.thon : '',
+                hoancanh : value.chitieu ? value.chitieu : '',
+                tentreem : value.hoten ? value.hoten : '',
+                magiadinh : value.id_giadinh ? value.id_giadinh : '',
+                timestart : value.ngaybatdau ? value.ngaybatdau : '',
+                timefinish : value.ngayketthuc ? value.ngayketthuc : '',
+                page : null,
+            })
+        }else if(statusSubmit===2){
+            if(!dataSubmit.huyen){
+                setSnackbars(true);
+            }else{
+                downloadFileExcelDataNCHCDBRequest(dataSubmit)
+            }
+        }else{
+            /* TODO SOMETHING */
+        }
     }
 
     const onHandleButtonPagination = (pageNumber) => {
@@ -89,6 +125,12 @@ function ManageRiskSpecial({
                 </Paper>
             </div>
             </Paper>
+            <Snackbars
+                open={snackbars}
+                onHandleSnackbars={onHandleSnackbars}
+                message="Phải chọn Quận/Huyện để xuất dữ liệu"
+                type={1010}
+            />
         </div>
     )
 }
@@ -107,5 +149,5 @@ const mapStateToProps = state => ({
     totalRiskSpecial : state.manageChildren.totalRiskSpecial,
 })
 
-export default connect(mapStateToProps, { fetchWardRequest, fetchVillageRequest, fetchDataRiskSpecialCircumstancesRequest })(ManageRiskSpecial)
+export default connect(mapStateToProps, { fetchWardRequest, fetchVillageRequest, fetchDataRiskSpecialCircumstancesRequest, downloadFileExcelDataNCHCDBRequest })(ManageRiskSpecial)
 

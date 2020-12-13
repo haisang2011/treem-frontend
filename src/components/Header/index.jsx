@@ -9,12 +9,13 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/authAction'
+import { deepOrange, green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     root: {
       "& .MuiList-root" : {
           position : "absolute",
-          left : 0,
+          right : '5%',
           top: "100%",
           backgroundColor : "#FFFFFF",
           zIndex: 1,
@@ -24,9 +25,17 @@ const useStyles = makeStyles((theme) => ({
         fontSize : "0.8rem",
       }
     },
+    orange: {
+        color: theme.palette.getContrastText(deepOrange[500]),
+        backgroundColor: deepOrange[500],
+    },
+    green: {
+        color: theme.palette.getContrastText(green[500]),
+        backgroundColor: green[500],
+    },
   }));
 
-function Header({ logout, username }) {
+function Header({ logout, username, locationUser }) {
 
     const classes = useStyles();
 
@@ -38,6 +47,10 @@ function Header({ logout, username }) {
     const handleLogout = () => {
         logout();
     }
+
+    const {
+        id_tinh, id_quan, id_xa
+    } = locationUser
 
     return (
         <header className="header">
@@ -64,8 +77,8 @@ function Header({ logout, username }) {
             </div>
 
             <div className="header__right" onClick={handleOpenClick}>
-                <Avatar className="header__right--avatar">
-                    NS
+                <Avatar className={`header__right--avatar ${id_xa ? `` : (id_quan ? classes.green : classes.orange)}`}>
+                    {id_xa ? 'X' : (id_quan ? 'P' : 'TP')}
                 </Avatar>
                 <span className="header__right--user">{username}</span>
                 <ArrowDropDownIcon color="primary"/>
@@ -73,14 +86,16 @@ function Header({ logout, username }) {
                 { open ? (
                     <div className={classes.root}>
                     <List>
-                    <ListItem
-                      button
-                    >
-                      <ListItemIcon>
-                        <VpnKeyIcon fontSize="small"/>
-                      </ListItemIcon>
-                      <ListItemText primary="Đổi mật khẩu" />
-                    </ListItem>
+                        <NavLink exact to="change-password">
+                            <ListItem
+                            button
+                            >
+                            <ListItemIcon>
+                                <VpnKeyIcon fontSize="small"/>
+                            </ListItemIcon>
+                            <ListItemText primary="Đổi mật khẩu" />
+                            </ListItem>
+                        </NavLink>
 
 
                     <ListItem
@@ -105,7 +120,8 @@ Header.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    username : state.auth.currentUser
+    username : state.auth.currentUser,
+    locationUser: state.auth.locationUser,
 })
 
 export default connect(mapStateToProps, { logout })(Header)

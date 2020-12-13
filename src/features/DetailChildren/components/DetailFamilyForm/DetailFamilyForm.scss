@@ -1,0 +1,34 @@
+.detailFamilyForm {
+
+    width: 550px;
+    max-width: 550px;
+    margin: 0 auto;
+
+    &__formik {
+        
+        &--paper {
+            padding : 10px;
+        }
+
+        &--field_father{
+            float: left;
+        }
+
+        &--button_father{
+            float: left;
+        }
+    }
+}
+
+.table-detailfamily {
+
+    &__pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        // &--button {
+        //     margin-right: 5px;
+        // }
+    }
+}

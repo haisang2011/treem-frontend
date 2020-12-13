@@ -25,6 +25,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DescriptionIcon from '@material-ui/icons/Description';
 import RemoveIcon from '@material-ui/icons/Remove';
 import Row from '../Row';
+import { isEmpty } from 'lodash';
+import DialogComfirm from '../../../../components/DialogComfirmDelete';
+import DialogAddChildrenExcel from '../../../../components/DialogAddChildrenExcel';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -37,8 +40,6 @@ function TablePaginationActions(props) {
   const classes = useStyles1();
   const theme = useTheme();
   const { count, page, rowsPerPage, onChangePage } = props;
-
-  console.log(count);
 
   const handleFirstPageButtonClick = (event) => {
     onChangePage(event, 0);
@@ -120,7 +121,10 @@ const useStyles2 = makeStyles({
   }
 });
 
-export default function CustomPaginationActionsTable({ childrenList, totalChildrenList, onHandlePagination, onHandleEdit }) {
+export default function CustomPaginationActionsTable({ 
+  childrenList, totalChildrenList, onHandlePagination, 
+  onHandleEdit, onHandleAdd, onDeleteChildren,
+}) {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -136,6 +140,22 @@ export default function CustomPaginationActionsTable({ childrenList, totalChildr
   //   setRowsPerPage(parseInt(event.target.value, 10));
   //   setPage(0);
   // };
+
+  const [open, setOpen] = React.useState(false);
+
+  const [selectedID, setSelectedID] = React.useState([]);
+  const onHandleSelectedID = (id) => {
+    const length_ = selectedID.length;
+    const arrNew = selectedID.filter(e => e!==id);
+    if(arrNew.length === length_){
+      setSelectedID([...selectedID, id]);
+    }else{
+      setSelectedID([...arrNew]);
+    }
+
+  }
+
+  const [openDialogExcel, setOpenDialogExcel] = React.useState(false);
 
   return (
     <div className="table-quanlytreem">
@@ -156,6 +176,10 @@ export default function CustomPaginationActionsTable({ childrenList, totalChildr
               index={index}
               row={row}
               onHandleEdit={onHandleEdit}
+              onHandleAdd={onHandleAdd}
+              onDeleteChildren={onDeleteChildren}
+              selectedID={selectedID}
+              onHandleSelectedID={onHandleSelectedID}
             />
           ))}
 
@@ -167,14 +191,38 @@ export default function CustomPaginationActionsTable({ childrenList, totalChildr
         </TableBody>
       </Table>
     </TableContainer>
+    {/* Dialog Confirm */}
+    <DialogComfirm
+      open={open}
+      listId={!isEmpty(selectedID) ? selectedID : null}
+      handleOnClose={() => setOpen(false)}
+      onDelete={onDeleteChildren}
+      title="Thông báo"
+      content="Bạn có muốn cho vào thùng rác bản ghi được chọn không?"
+    />
+
+    <DialogAddChildrenExcel
+      handleOnClose={() => setOpenDialogExcel(false)}
+      open={openDialogExcel}
+    />
     <div className="table-quanlytreem__pagination">
       <div className="table-quanlytreem__pagination--button">
-        <Button variant="contained" style={{textTransform:"none", marginRight:"4px"}} color="primary">
-          <DescriptionIcon />
+        <Button 
+          variant="contained"
+          onClick={() => setOpenDialogExcel(true)}
+          startIcon={<DescriptionIcon />}
+          style={{textTransform:"none", marginRight:"4px"}} 
+          color="primary"
+        >
           Nhập từ Excel
         </Button>
-        <Button variant="contained" style={{textTransform:"none"}} color="secondary">
-          <RemoveIcon />
+        <Button 
+          variant="contained" 
+          startIcon={<RemoveIcon />}
+          style={{textTransform:"none"}} 
+          color="secondary"
+          onClick={() => setOpen(true)}
+        >
           Thùng rác
         </Button>
       </div>

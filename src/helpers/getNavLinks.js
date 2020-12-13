@@ -20,7 +20,8 @@ export const navLinks = [
                 subPath : '/nhatkyhoatdong'
             },
             {
-                subTitle : "Đăng xuất"
+                subTitle : "Đăng xuất",
+                subPath : '/logout'
             }
         ]
     },
@@ -29,10 +30,12 @@ export const navLinks = [
         dropdown : [
             {
                 subTitle : "Nhập liệu trẻ em khác GĐ",
+                notHref : true,
                 role : ROLE_WARD
             },
             {
                 subTitle : "Nhập liệu trẻ em cùng GĐ",
+                notHref : true,
                 role : ROLE_WARD
             },
             {

@@ -4,27 +4,38 @@ import PropTypes from 'prop-types'
 import { CssBaseline, Paper } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchWardRequest, fetchVillageRequest } from '../../actions/commonAction';
-import { fetchDataFormOfHelpRequest } from '../../actions/manageChildrenAction';
+import { fetchDataFormOfHelpRequest, downloadFileExcelDataHTTGRequest } from '../../actions/manageChildrenAction';
 import SearchForm from '../ManageFormOfHelp/components/SearchForm';
 import Table from '../ManageFormOfHelp/components/Table';
+import Snackbars from '../../components/Snackbars';
 
 function ManageFormOfHelp({
     locationUser, quanhuyenList, thonList, phuongxaList,
     fetchWardRequest, fetchVillageRequest,
-    listHTTG, formOfHelp, totalFormOfHelp, fetchDataFormOfHelpRequest
+    listHTTG, formOfHelp, totalFormOfHelp, fetchDataFormOfHelpRequest,
+    downloadFileExcelDataHTTGRequest,
 }) {
 
+    const {
+        id_tinh, id_quan, id_xa,
+        thanhpho, quanhuyen, phuongxa
+    } = locationUser
+
+    const [snackbars, setSnackbars] = React.useState(false);
+    const onHandleSnackbars = () => {
+        setSnackbars(false);
+    }
+
     const [values, setValues] = React.useState({
-        tinhthanhpho: '',
-        quanhuyen: '',
-        phuongxa: '',
+        thanhpho: id_tinh || '',
+        huyen: id_quan || '',
+        xa: id_xa || '',
         thon : '',
-        hoten: '',
-        nguoinuoi: '',
-        id_giadinh: '',
-        thungrac: '',
-        dantoc: '',
-        gioitinh: '',
+        hinhthuc : '',
+        tentreem: '',
+        magiadinh: '',
+        timestart: '',
+        timefinish: '',
         page: null,
     })
 
@@ -41,20 +52,43 @@ function ManageFormOfHelp({
 
     }
 
-    const onSubmitForm = (value) => {
+    const onSubmitForm = (value, statusSubmit) => {
 
-        setValues({
+        const dataSubmit = {
             thanhpho: value.tinhthanhpho ? value.tinhthanhpho : '',
             huyen: value.quanhuyen ? value.quanhuyen : '',
-            xa: value.quanhuyen ? value.phuongxa : '',
+            xa: value.phuongxa ? value.phuongxa : '',
             thon : value.thon ? value.thon : '',
-            hoancanh : value.chitieu ? value.chitieu : '',
+            hinhthuc : value.chitieu ? value.chitieu : '',
             tentreem : value.hoten ? value.hoten : '',
             magiadinh : value.id_giadinh ? value.id_giadinh : '',
             timestart : value.ngaybatdau ? value.ngaybatdau : '',
             timefinish : value.ngayketthuc ? value.ngayketthuc : '',
             page : null,
-        })
+        }
+
+        if(statusSubmit===1){
+            setValues({
+                thanhpho: value.tinhthanhpho ? value.tinhthanhpho : '',
+                huyen: value.quanhuyen ? value.quanhuyen : '',
+                xa: value.phuongxa ? value.phuongxa : '',
+                thon : value.thon ? value.thon : '',
+                hinhthuc : value.chitieu ? value.chitieu : '',
+                tentreem : value.hoten ? value.hoten : '',
+                magiadinh : value.id_giadinh ? value.id_giadinh : '',
+                timestart : value.ngaybatdau ? value.ngaybatdau : '',
+                timefinish : value.ngayketthuc ? value.ngayketthuc : '',
+                page : null,
+            })
+        }else if(statusSubmit===2){
+            if(!dataSubmit.huyen){
+                setSnackbars(true);
+            }else{
+                downloadFileExcelDataHTTGRequest(dataSubmit)
+            }
+        }else{
+            /* TODO SOMETHING */
+        }
     }
 
     const onChoose = (id, step) => {
@@ -91,6 +125,12 @@ function ManageFormOfHelp({
                 </Paper>
             </div>
             </Paper>
+            <Snackbars
+                open={snackbars}
+                onHandleSnackbars={onHandleSnackbars}
+                message="Phải chọn Quận/Huyện để xuất dữ liệu"
+                type={1010}
+            />
         </div>
     )
 }
@@ -109,5 +149,5 @@ const mapStateToProps = state => ({
     totalFormOfHelp : state.manageChildren.totalFormOfHelp,
 })
 
-export default connect(mapStateToProps, { fetchWardRequest, fetchVillageRequest, fetchDataFormOfHelpRequest })(ManageFormOfHelp)
+export default connect(mapStateToProps, { fetchWardRequest, fetchVillageRequest, fetchDataFormOfHelpRequest, downloadFileExcelDataHTTGRequest })(ManageFormOfHelp)
 

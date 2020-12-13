@@ -1,7 +1,7 @@
 import axiosClient from "./axiosClient";
 import store from '../app/store';
 import queryString from 'query-string';
-
+import { saveAs } from 'file-saver';
 const tokenConfig = (getState) => {
 
   /* Get token from Localstorage */
@@ -48,6 +48,21 @@ const manageChidlrenSpecialCircumstancesApi = {
           params,
           headers : {
             'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  downloadFileExcelHCDB: (params) => {
+    const url = `/excel/download`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.get(
+        url,
+        {
+          params,
+          responseType: 'blob',
+          headers : {
+            'access-token' : accessToken,
+            'content-type': 'application/vnd.ms-excel;charset=UTF-8',
           }
         }
     );

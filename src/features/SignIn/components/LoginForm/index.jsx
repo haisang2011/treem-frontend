@@ -3,7 +3,7 @@ import './LoginForm.scss';
 import { Button } from '@material-ui/core'
 import { FastField, Formik, Form } from 'formik'
 import InputField from '../../../../custom-fields/InputField';
-import SignInSchema from '../../../../validation/signIn';
+import {SignInSchema} from '../../../../validation/signIn';
 
 
 // Custom style for Form //
@@ -20,7 +20,7 @@ import SignInSchema from '../../../../validation/signIn';
 //     },
 // }))
 
-function LoginForm({ initialValues, onSubmitForm }) {
+function LoginForm({ initialValues, onSubmitForm, message, code }) {
 
     const onSubmitFormik = (values, action) => {
         onSubmitForm(values)
@@ -46,6 +46,8 @@ function LoginForm({ initialValues, onSubmitForm }) {
                             label="ID NGƯỜI DÙNG"
                             placeholder="Xin hãy nhập tài khoản..."
                             type="text"
+                            message={message}
+                            code={code}
                         />
                         <br />
 
@@ -57,6 +59,8 @@ function LoginForm({ initialValues, onSubmitForm }) {
                             label="MẬT KHẨU"
                             placeholder="Xin hãy nhập mật khẩu..."
                             type="password"
+                            message={message}
+                            code={code}
                         />
                         <br />
 

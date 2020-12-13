@@ -36,19 +36,21 @@ function DateField(props) {
       form, field, label, placeholder, valueDate
     } = props
 
-    const { name } = field
+    const { name, value } = field
+    const { touched, errors } = form
 
     const classes = useStyles()
 
-    const [selectedDate, handleDateChange] = React.useState(valueDate);
+    const [selectedDate, handleDateChange] = React.useState(valueDate ? valueDate : null);
 
     const onHandleDateChangeSubmit = (date) => {
+
       handleDateChange(date)
       
       const changeEvent = {
         target: {
           name: name,
-          value: moment(date).format('YYYY/MM/DD')
+          value: date ? moment(date).format('YYYY/MM/DD') : '',
         }
       }
 
@@ -58,12 +60,15 @@ function DateField(props) {
     return (
       <KeyboardDatePicker
         className={classes.formControl}
+        {...field}
         margin="dense"
         autoOk
         variant="inline"
         inputVariant="outlined"
         label={label}
         format="dd/MM/yyyy"
+        mask="dd/MM/yyyy"
+        error={errors[name] && touched[name] ? true : false}
         value={selectedDate}
         InputAdornmentProps={{ position: "end" }}
         onChange={date => onHandleDateChangeSubmit(date)}

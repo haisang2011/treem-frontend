@@ -5,7 +5,8 @@ import { AppBar, makeStyles, List, ListItem, ListItemText, Collapse, ClickAwayLi
 import { Link, NavLink } from 'react-router-dom';
 import { navLinks } from '../../helpers/getNavLinks'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-
+import { useDispatch } from 'react-redux';
+import * as ActionType from '../../contants/actionType';
 
 const useStyles = makeStyles(theme => ({
     root : {
@@ -35,6 +36,40 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function Navbar({ locationUser }) {
+
+    const dispatch = useDispatch();
+    
+    const onHandleAddOtherFamily = () => {
+
+        const {
+            id_tinh, thanhpho, id_quan,
+            quanhuyen, id_xa, phuongxa,
+        } = locationUser
+        const data = {
+            result : {
+                ten_tinhthanhpho:thanhpho,
+                id_tinhthanhpho:id_tinh,
+                ten_quanhuyen:quanhuyen,
+                id_quanhuyen:id_quan,
+                ten_phuongxa:phuongxa,
+                id_phuongxa:id_xa,
+            }
+        }
+
+        dispatch({
+            type : ActionType.ManageChildren.FETCH_DATA_DETAIL_CHILDREN,
+            payload : data,
+        })
+        dispatch({
+            type : ActionType.Status.OPEN_DETAIL_CHILDREN_FOLLOW_LOCATION_USER,
+            payload : true
+        })
+
+        dispatch({
+            type : ActionType.Status.OPEN_DETAIL_CHILDREN,
+            payload : true
+        })
+    }
 
     const classes = useStyles()
 
@@ -89,7 +124,7 @@ function Navbar({ locationUser }) {
                                     <List
                                         className={classes.positionSubLink}
                                     >
-                                        {dropdown.map(({subTitle, subPath, role}) => {
+                                        {dropdown.map(({subTitle, subPath, role, notHref}) => {
                                             if(locationUser.id_tinh && !locationUser.id_quan && !locationUser.id_xa){
                                                 if(role && role===1){
                                                     return (
@@ -106,6 +141,18 @@ function Navbar({ locationUser }) {
                                             }
                                             if(locationUser.id_tinh && locationUser.id_quan && locationUser.id_xa){
                                                 if(role && role===2){
+                                                    if(notHref){
+                                                        return (
+                                                            <ListItem
+                                                            key={subTitle}
+                                                            onClick={onHandleAddOtherFamily}
+                                                            button
+                                                            >
+                                                                <ListItemText primary={subTitle} />
+                                                            </ListItem>
+                                                        )
+                                                    }
+
                                                     return (
                                                         <ListItem
                                                             key={subTitle}

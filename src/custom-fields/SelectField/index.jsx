@@ -33,9 +33,10 @@ function SelectField(props) {
       form, field, label, disabled, valueLocation, valueDetail,
       phuongXaList, quanHuyenList, thonList, trangThai,
       gioiTinh, danToc, readOnly, onChoose, authWardLocation, authDistrictLocation,
-      tinhTrangHocTap, lopHocCaoNhat,
+      tinhTrangHocTap, lopHocCaoNhat, listChecked, agesFrom, comingOfAge,
     } = props
-    const { name } = field
+    const { name, value } = field
+    const { touched, errors } = form
 
     const classes = useStyles()
 
@@ -70,9 +71,10 @@ function SelectField(props) {
           id={name}
           {...field}
           onChange={handleSelect}
-          value={state}
+          // value={state}
           name={name}
           label={label}
+          error={errors[name] && touched[name] ? true : false}
           disabled={disabled}
           inputProps={{
             readOnly: readOnly,
@@ -86,7 +88,7 @@ function SelectField(props) {
           }}
         >
           {/* <MenuItem value={""}></MenuItem> */}
-          {valueLocation && (<MenuItem value={valueLocation}>{valueLocation}</MenuItem>)}
+          {valueLocation && (<MenuItem value={value}>{valueLocation}</MenuItem>)}
           {phuongXaList && (phuongXaList.map(({id_phuongxa, ten_phuongxa}) => (
             <MenuItem value={id_phuongxa} key={id_phuongxa}>{ten_phuongxa}</MenuItem>
           )))}
@@ -108,8 +110,17 @@ function SelectField(props) {
           {tinhTrangHocTap && (tinhTrangHocTap.map(({value, title}) => (
             <MenuItem value={value}>{title}</MenuItem>
           )))}
-          {lopHocCaoNhat && (lopHocCaoNhat.map(({value, title}) => (
-            <MenuItem value={value}>{title}</MenuItem>
+          {lopHocCaoNhat && (lopHocCaoNhat.map((e) => (
+            <MenuItem value={e}>{e}</MenuItem>
+          )))}
+          {listChecked && (listChecked.map(({id_thon, tenthon}) => (
+            <MenuItem value={id_thon}>{tenthon}</MenuItem>
+          )))}
+          {agesFrom && (agesFrom.map(e => (
+            <MenuItem value={e}>{e}</MenuItem>
+          )))}
+          {comingOfAge && (comingOfAge.map(e => (
+            <MenuItem value={e}>{e}</MenuItem>
           )))}
         </Select>
       </FormControl>

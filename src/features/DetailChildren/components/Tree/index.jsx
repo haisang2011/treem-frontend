@@ -4,40 +4,37 @@ import 'antd/dist/antd.css';
 import { Tree } from 'antd';
 import { rename, renameHoanCanh } from '../../../../helpers/renamePropertyObject';
 
-//['0-0-0', '0-0-1']  ['0-0-0']
+const TreeDetail = ({
+  treeData, treeDataDetailChildren, handleOnChange, 
+  tabCurrent, onCheck, checkedKeys, expandedKeys,
+  onHandleExpandedKeys,
+}) => {
 
-// const getKeys = data => {
-//   const nestedKeys = data.map(node => {
-//     let childKeys = [];
-//     if (node.children) {
-//       childKeys = getAllKeys(node.children);
-//     }
-//     if(node.value){
-//       return [childKeys, node.key];
-//     }
-//   });
-//   return flattenDeep(nestedKeys);
-// };
-
-const TreeDetail = ({treeData, treeDataDetailChildren}) => {
-console.log("Tree Data Detail CHildren : ",treeData)
-console.log("Tree Data : ",treeDataDetailChildren)
-  const [expandedKeys, setExpandedKeys] = useState(treeDataDetailChildren);
-  const [checkedKeys, setCheckedKeys] = useState(treeDataDetailChildren);
+  // const [expandedKeys, setExpandedKeys] = useState([]);
+  // const [checkedKeys, setCheckedKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
+
+  // React.useEffect(() => {
+  //   setExpandedKeys(treeDataDetailChildren);
+  //   setCheckedKeys(treeDataDetailChildren);
+  // },[])
 
   const onExpand = (expandedKeys) => {
     console.log('onExpand', expandedKeys); // if not set autoExpandParent to false, if children expanded, parent can not collapse.
     // or, you can remove all expanded children keys.
 
-    setExpandedKeys(expandedKeys);
+    // onHandleExpandedKeys(expandedKeys);
     setAutoExpandParent(false);
   };
 
-  const onCheck = (checkedKeys) => {
-    console.log('onCheck', checkedKeys);
-    setCheckedKeys(checkedKeys);
+  const handleOnCheck = (checkedKeys) => {
+    // console.log('onCheck', checkedKeys);
+    // setCheckedKeys(checkedKeys);
+    // console.log("tab Current : ",tabCurrent)
+    console.log({checkedKeys})
+    handleOnChange(checkedKeys, tabCurrent);
+    onCheck(checkedKeys);
   };
 
   const onSelect = (selectedKeys, info) => {
@@ -50,11 +47,11 @@ console.log("Tree Data : ",treeDataDetailChildren)
       checkable
       onExpand={onExpand}
       expandedKeys={expandedKeys}
+      defaultExpandAll
       autoExpandParent={autoExpandParent}
-      onCheck={onCheck}
+      onCheck={handleOnCheck}
       showLine
-      style={{ width: '100%', marginTop: "22px" }}
-      height={500}
+      style={{ width: '100%', marginTop: "22px", height: "500px", overflow: "auto" }}
       checkedKeys={checkedKeys}
       onSelect={onSelect}
       selectedKeys={selectedKeys}

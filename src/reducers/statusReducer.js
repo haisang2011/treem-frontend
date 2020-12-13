@@ -2,6 +2,8 @@ import { Status } from '../contants/actionType'
 
 const initialState = {
     isShowDetailChildren : false,
+    isShowDetailChildrenFollowIdFamily : false,
+    isShowDetailChildrenFollowLocationUser : false,
 }
 
 export default (state=initialState, action) => {
@@ -15,7 +17,19 @@ export default (state=initialState, action) => {
             return {
                 ...state,
                 isShowDetailChildren : action.payload,
-            }  
+                isShowDetailChildrenFollowIdFamily : action.payload,
+                isShowDetailChildrenFollowLocationUser : action.payload,
+            }
+        case Status.OPEN_DETAIL_CHILDREN_FOLLOW_ID_FAMILY:
+            return {
+                ...state,
+                isShowDetailChildrenFollowIdFamily : action.payload,
+            }
+        case Status.OPEN_DETAIL_CHILDREN_FOLLOW_LOCATION_USER:
+            return {
+                ...state,
+                isShowDetailChildrenFollowLocationUser : action.payload,
+            }
         default:
             return state;
     }

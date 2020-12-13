@@ -2,16 +2,31 @@ import React from 'react'
 import './userAdministration.scss';
 import PersonIcon from '@material-ui/icons/Person';
 import PropTypes from 'prop-types'
-import { CssBaseline, Paper } from '@material-ui/core';
+import { Button, CssBaseline, IconButton, Paper, Snackbar } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchWardRequest } from '../../actions/commonAction';
+import { fetchAccountSearchRequest, updateAccountRequest } from '../../actions/manageAccount';
 import SearchForm from '../userAdministration/components/SearchForm';
 import Table from '../userAdministration/components/Table';
+import Snackbars from '../../components/Snackbars';
+import { clearErrors } from '../../actions/errorAction';
 
 function UserAdministration({
-    locationUser, quanhuyenList, phuongxaList,
-    fetchWardRequest, listAccount,
+    locationUser, quanhuyenList, phuongxaList, updateAccountRequest,
+    fetchWardRequest, listAccount, fetchAccountSearchRequest, msg, code, clearErrors,
 }) {
+
+    const [values, setValues] = React.useState({
+        huyen: '',
+        xa: '',
+        tentaikhoan: '',
+        tenhienthi: '',
+        page: null,
+    })
+
+    React.useEffect(() => {
+        fetchAccountSearchRequest(values)
+    }, [values])
 
     const onChoose = (id, step) => {
         if(step===2){
@@ -19,8 +34,28 @@ function UserAdministration({
         }
     }
 
-    const onSubmitForm = (values) => {
-        console.log({values})
+    const onSubmitForm = (value) => {
+        setValues({
+            huyen: value.role===1 ? '' : (value.quanhuyen ? value.quanhuyen : ''),
+            xa: value.role===1 ? '' : (value.role===2 ? '' : (value.phuongxa ? value.phuongxa : '')),
+            tentaikhoan: value.idnguoidung ? value.idnguoidung : '',
+            tenhienthi: value.tenhienthi ? value.tenhienthi : '',
+            page : null,
+        })
+    }
+
+    const onSubmitFormUpdateAccount = (valuesUpdate) => {
+        valuesUpdate.huyen = values.huyen;
+        valuesUpdate.xa = values.xa;
+        updateAccountRequest(valuesUpdate, values);
+        setSnackbars(true);
+    }
+
+    
+    const [snackbars, setSnackbars] = React.useState(false);
+    const onHandleSnackbars = () => {
+        clearErrors();
+        setSnackbars(false);
     }
 
     return (
@@ -46,9 +81,15 @@ function UserAdministration({
                 <Paper>
                     <Table
                         listAccount={listAccount}
+                        onSubmitFormUpdate={onSubmitFormUpdateAccount}
                     />
                 </Paper>
             </div>
+            <Snackbars
+                open={snackbars}
+                onHandleSnackbars={onHandleSnackbars}
+            />
+            
             </Paper>
         </div>
     )
@@ -63,7 +104,9 @@ const mapStateToProps = state => ({
     phuongxaList : state.common.phuongxaList,
     quanhuyenList : state.common.quanhuyenList,
     listAccount : state.manageAccount.listAccount,
+    msg : state.error.msg,
+    code : state.error.code,
 })
 
-export default connect(mapStateToProps, { fetchWardRequest })(UserAdministration)
+export default connect(mapStateToProps, { fetchWardRequest, fetchAccountSearchRequest, updateAccountRequest, clearErrors })(UserAdministration)
 

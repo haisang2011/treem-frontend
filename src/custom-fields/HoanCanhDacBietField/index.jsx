@@ -32,7 +32,7 @@ function HoanCanhDacBiet(props) {
 
     const classes = useStyles()
 
-  const [state, setState] = React.useState(null);
+  const [state, setState] = React.useState(undefined);
 
   const handleSelect = (value) => {
     setState(value);
@@ -51,15 +51,15 @@ function HoanCanhDacBiet(props) {
       <TreeSelect
         treeLine
         showArrow
+        allowClear
+        placeholder={label}
         treeIcon={true}
         virtual={false}
-        showArrow
         style={{ width: '100%' }}
+        {...field}
         value={state}
         dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
         treeData={listData}
-        placeholder={label}
-        {...field}
         onChange={handleSelect}
       />
     )

@@ -15,11 +15,11 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-function TabsTreeSelect({ onHandleTabIndex }) {
+function TabsTreeSelect({ tab, onHandleTabIndex }) {
 
     const classes = useStyles();
 
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState(tab || 0);
 
     const handleChange = (event, newValue) => {
       setValue(newValue);

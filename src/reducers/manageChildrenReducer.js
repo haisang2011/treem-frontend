@@ -51,6 +51,25 @@ export default (state=initialState, action) => {
                 ...state,
                 detailChildrenInfo : {...action.payload.result},
             };
+        case ManageChildren.CLEANUP_DATA_DETAIL_CHILDREN:
+            return {
+                ...state,
+                detailChildrenInfo : null,
+            };
+        case ManageChildren.CLEANUP_ALL_DATA:
+            return {
+                childrenList : [],
+                specialCircumstances : [],
+                riskSpecial : [],
+                otherCircumstances : [],
+                formOfHelp : [],
+                totalChildrenList : null,
+                totalSpecialCircumstances : null,
+                totalRiskSpecial : null,
+                totalOtherCircumstances : null,
+                totalFormOfHelp : null,
+                detailChildrenInfo : null,
+            };
         default:
             return state;
     }

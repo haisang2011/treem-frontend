@@ -176,10 +176,10 @@ function SearchForm({
                             <Grid item xs={6} container justify="flex-end" alignItems="center">
                                 <Button 
                                 type="submit" 
+                                startIcon={<SearchIcon />}
                                 variant="contained" 
                                 style={{backgroundColor:"#35baf6"}}
                                 >
-                                    <SearchIcon />
                                     Tìm kiếm
                                 </Button>
                             </Grid>

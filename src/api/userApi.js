@@ -30,6 +30,34 @@ const userApi = {
         tokenConfig(store.getState)
     );
   },
+  logout: () => {
+    const url = '/user/logout';
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    const data = { accessToken }
+    return axiosClient.post(
+        url,
+        data,
+        {
+          headers : {
+            'access-token' : accessToken,
+          },
+        }
+    );
+  },
+  changePasswordUser: (params) => {
+    const body = params;
+    const url = `/user/changepassword`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.post(
+        url,
+        body,
+        {
+          headers : {
+            'access-token' : accessToken,
+          },
+        }
+    );
+  },
 }
 
 export default userApi;

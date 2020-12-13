@@ -81,10 +81,11 @@ function InputField(props) {
             variant,
             isFieldLogin,
             disabled,
+            message,
+            code,
     } = props
     const { name, value } = field
     const { touched, errors } = form
-    console.log(field)
     return (
         <MuiThemeProvider theme={theme}>
             <TextField
@@ -94,7 +95,7 @@ function InputField(props) {
                 label={label ? label : null}
                 variant="outlined"
                 type={type}
-                error={errors[name] && touched[name] ? true : false}
+                error={errors[name] && touched[name] ? true : (code===401 ? true : false)}
                 placeholder={placeholder}
                 name={name}
                 id={name}

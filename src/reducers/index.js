@@ -5,6 +5,7 @@ import common from './commonReducer';
 import manageAccount from './managaAccountReducer';
 import manageLocal from './manageLocalReducer';
 import status from './statusReducer';
+import family from './manageFamilyReducer';
 import { combineReducers } from 'redux';
 
 export default combineReducers({
@@ -15,4 +16,5 @@ export default combineReducers({
     manageLocal,
     common,
     status,
+    family,
 })

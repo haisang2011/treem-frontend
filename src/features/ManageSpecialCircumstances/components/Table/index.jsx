@@ -1,5 +1,5 @@
 import React from 'react';
-// import './Table.scss';
+import './Table.scss';
 import Moment from 'react-moment';
 import Caregiver from '../../../../helpers/mergeFatherMotherToOne';
 import CustomAddress from '../../../../helpers/customLengthAddress';
@@ -155,6 +155,7 @@ const useStyles2 = makeStyles({
 
   container: {
     maxHeight: 440,
+    height: 440,
 
     "& .MuiTableCell-root" : {
       padding : "8px",
@@ -183,10 +184,9 @@ export default function CustomPaginationActionsTable({ specialCircumstances, lis
   return (
     <div className="table-hoancanhdacbiet">
     <TableContainer component={Paper} className={classes.container}>
-      <Table className={classes.table}>
+      <Table stickyHeader className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell />
             {columns.map(({title, style}) => (
               <TableCell key={title} style={style}>{title}</TableCell>
             ))}
@@ -196,13 +196,8 @@ export default function CustomPaginationActionsTable({ specialCircumstances, lis
           </TableRow>
         </TableHead>
         <TableBody>
-          {specialCircumstances.length>0 && specialCircumstances.map((row, index) => (
+          {specialCircumstances.length>0 ? specialCircumstances.map((row, index) => (
             <TableRow key={row.id_treem} style={(index % 2) ? { backgroundColor: "#e9e9e9" } : { backgroundColor: "white" }}>
-              <TableCell style={{ width: 120 }}>
-                <AddIcon />
-                <EditIcon />
-                <DeleteIcon />
-              </TableCell>
               <TableCell style={{ width: 140 }}>
                 {row.id_giadinh}
               </TableCell>
@@ -242,7 +237,7 @@ export default function CustomPaginationActionsTable({ specialCircumstances, lis
                   </TableCell>
               ))}
             </TableRow>
-          ))}
+          )) : null}
 
           {/* {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>

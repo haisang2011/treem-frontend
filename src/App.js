@@ -4,10 +4,11 @@ import './assets/css/style.scss';
 import NotFound from './components/NotFound';
 import SignIn from './features/SignIn';
 import Main from './wrapper/Main';
+import ChangePassword from './wrapper/ChangePassword';
 import { connect } from 'react-redux'
 import PrivateRoute from './wrapper/PrivateRoute';
 import PublicRoute from './wrapper/PublicRoute';
-import ManageSpecialCircumstances from './features/ManageSpecialCircumstances';
+import Logout from './features/Logout';
 
 function App({ isAuthenticated, isLoading }) {
 
@@ -68,6 +69,54 @@ function App({ isAuthenticated, isLoading }) {
           exact
           component={Main}
           path='/quantridiaphuong'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/khaithactreem'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/khaithactreembinhthuong'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/khaithachogiadinh'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Main}
+          path='/khaithactreemdoituong'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={ChangePassword}
+          path='/change-password'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={Logout}
+          path='/logout'
           isLoading={isLoading}
           isAuthenticated={isAuthenticated}
         />

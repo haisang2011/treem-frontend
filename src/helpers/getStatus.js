@@ -1,10 +1,10 @@
 export const statusExists = [
     {
-        value: 0,
+        value: "Sử dụng",
         title: "Sử dụng"
     },
     {
-        value: 1,
+        value: "Thùng rác",
         title: "Thùng rác"
     }
 ]

@@ -1,0 +1,14 @@
+.table-dialogexcel {
+
+    &__pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 6px;
+        padding: 0 10px;
+
+        &--button {
+            // margin-left: 5px;
+        }
+    }
+}

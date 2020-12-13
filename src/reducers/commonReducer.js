@@ -52,6 +52,16 @@ export default (state=initialState, action) => {
                 ...state,
                 listHTTG : [...action.payload],
             }
+        case CommonList.CLEANUP_ALL_DATA :
+            return {
+                quanhuyenList : [],
+                phuongxaList : [],
+                thonList : [],
+                listHCDB : [],
+                listNCHCDB : [],
+                listHCK : [],
+                listHTTG : [],
+            }
         default:
             return state;
     }

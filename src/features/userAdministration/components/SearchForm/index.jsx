@@ -157,14 +157,14 @@ function SearchForm({
                                     />
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                <Grid container alignItems="center" justify="flex-end" item xs={3}>
                                     <Button
+                                        startIcon={<SearchIcon />}
                                         size="small"
                                         type="submit" 
                                         variant="contained" 
                                         style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px",}}
                                         >
-                                            <SearchIcon />
                                             Tìm kiếm
                                     </Button>
                                 </Grid>

@@ -17,14 +17,22 @@ function SearchForm({
      listHCDB,
 }) {
     
+    // const [dataSendExport, setDataSendExport] = React.useState(null);
+
     const {
         id_tinh, id_quan, id_xa,
         thanhpho, quanhuyen, phuongxa
     } = locationUser
 
+    const [statusSubmit, setStatusSubmit] = React.useState(null);
+
     const onSubmitFormik = (values, action) => {
-        onSubmitForm(values)
+        onSubmitForm(values, statusSubmit);
     }
+
+    /* Test */
+    // const handleOnExportFile = ()
+    /* End Test */
 
     const initialStatus = id_xa ? 0 : (!id_xa && id_quan ? 1 : (!id_quan && id_tinh ? 2 : null))
 
@@ -172,23 +180,28 @@ function SearchForm({
                                 <Grid item container xs={4} justify="flex-end" alignItems="center">
                                     <Grid item>
                                         <Button
+                                        onMouseOver={() => setStatusSubmit(1)}
+                                        onMouseOut={() => setStatusSubmit(null)}
+                                        startIcon={<SearchIcon />}
                                         size="small"
                                         type="submit" 
                                         variant="contained" 
                                         style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px",marginRight:"5px"}}
                                         >
-                                            <SearchIcon />
                                             Tìm kiếm
                                         </Button>
                                     </Grid>
 
                                     <Grid item>
                                         <Button
+                                        onMouseOver={() => setStatusSubmit(2)}
+                                        onMouseOut={() => setStatusSubmit(null)}
+                                        startIcon={<DescriptionIcon />}
                                         size="small"
-                                        variant="contained" 
+                                        variant="contained"
+                                        type="submit" 
                                         style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px"}}
                                         >
-                                            <DescriptionIcon />
                                             Xuất
                                         </Button>
                                     </Grid>

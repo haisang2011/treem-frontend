@@ -11,6 +11,10 @@ export default (state=initialState, action) => {
                 ...state,
                 listLocal : [...action.payload]
             };
+        case ManageLocal.CLEANUP_ALL_DATA:
+            return {
+                listLocal : [],
+            };
         default:
             return state;
     }

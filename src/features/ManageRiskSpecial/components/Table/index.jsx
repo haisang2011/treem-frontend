@@ -1,5 +1,5 @@
 import React from 'react';
-// import './Table.scss';
+import './Table.scss';
 import Moment from 'react-moment';
 import Caregiver from '../../../../helpers/mergeFatherMotherToOne';
 import CustomAddress from '../../../../helpers/customLengthAddress';
@@ -186,7 +186,6 @@ export default function CustomPaginationActionsTable({ riskSpecial, listNCHCDB, 
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell />
             {columns.map(({title, style}) => (
               <TableCell key={title} style={style}>{title}</TableCell>
             ))}
@@ -198,11 +197,6 @@ export default function CustomPaginationActionsTable({ riskSpecial, listNCHCDB, 
         <TableBody>
           {riskSpecial.length > 0 && riskSpecial.map((row, index) => (
             <TableRow key={row.id_treem} style={(index % 2) ? { backgroundColor: "#e9e9e9" } : { backgroundColor: "white" }}>
-              <TableCell style={{ width: 120 }}>
-                <AddIcon />
-                <EditIcon />
-                <DeleteIcon />
-              </TableCell>
               <TableCell style={{ width: 140 }}>
                 {row.id_giadinh}
               </TableCell>

@@ -28,6 +28,11 @@ import AddSharpIcon from '@material-ui/icons/AddSharp';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import DialogLocal from '../../../../components/DialogLocal';
+import RowTable from '../RowTable';
+import DialogComfirm from '../../../../components/DialogComfirmDelete';
+import DialogMergeLocal from '../../../../components/DialogMergeLocal';
+import { isEmpty } from 'lodash';
 
 function CustomShareIcon(props) {
   return (
@@ -135,10 +140,18 @@ const useStyles2 = makeStyles({
     "& .MuiTableCell-root" : {
       padding : "8px",
     }
-  }
+  },
+  disabledButton : {
+    "&:disabled": {
+      opacity: 0.6,
+      cursor: 'not-allowed',
+      pointerEvents: 'auto',
+    }
+  },
+
 });
 
-export default function CustomPaginationActionsTable({ listLocal }) {
+export default function CustomPaginationActionsTable({ listLocal, onSubmitForm, onDeleteLocal, onSubmitFormMergeLocal,}) {
 
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
@@ -154,6 +167,68 @@ export default function CustomPaginationActionsTable({ listLocal }) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const [open, setOpen] = React.useState(false);
+  const handleOnOpen = () => {
+    setSelectedLocal(null);
+    setOpen(true);
+  }
+  const handleOnClose = (status) => {
+    setOpen(status);
+  }
+
+  const [selectedID, setSelectedID] = React.useState([]);
+  const [selectedLocal, setSelectedLocal] = React.useState(null);
+  const onHandleSelectedID = (id) => {
+
+    const length_ = selectedID.length;
+    const arrNew = selectedID.filter(e => e!==id);
+    if(arrNew.length === length_){
+      setSelectedID([...selectedID, id]);
+    }else{
+      setSelectedID([...arrNew]);
+    }
+
+  }
+
+  const handleOnEdit = () => {
+    const data = listLocal.filter(({id_thon, tenthon, id_phuongxa, daxoa}) => id_thon===selectedID[0])
+    setSelectedLocal(data);
+    setOpen(true);
+  }
+
+  const handleOnSubmitForm = (values) => {
+    onSubmitForm(values);
+    setOpen(false);
+  }
+
+  const [openDelete, setOpenDelete] = React.useState(false);
+  const handleOnOpenDelete = () => {
+    setOpenDelete(true);
+  }
+
+  const handleOnCloseDelete = (status) => {
+    setOpenDelete(status);
+  }
+
+  const onDelete = (id) => {
+    onDeleteLocal(id)
+    setOpenDelete(false)
+  }
+
+  const [openMerge, setOpenMerge] = React.useState(false);
+  const handleOnOpenMerge = () => {
+    setOpenMerge(true);
+  }
+
+  const handleOnCloseMerge = (status) => {
+    setOpenMerge(status);
+  }
+
+  const handleOnSubmitMergeLocal = (values, listChecked) => {
+    onSubmitFormMergeLocal(values, listChecked);
+    setOpenMerge(false);
+  }
 
   return (
     <div className="table-quanlydiaphuong">
@@ -171,17 +246,13 @@ export default function CustomPaginationActionsTable({ listLocal }) {
             ? listLocal.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : listLocal
           ).map((row, index) => (
-            <TableRow key={row.tenthon} style={(index % 2) ? { backgroundColor: "#e9e9e9" } : { backgroundColor: "white" }}>
-              <TableCell>
-                {index+1}
-              </TableCell>
-              <TableCell>
-                {row.tenthon}
-              </TableCell>
-              <TableCell>
-                {0}
-              </TableCell>
-            </TableRow>
+            <RowTable
+              key={row.id_thon}
+              index={index}
+              row={row}
+              selectedID={selectedID}
+              onHandleSelectedID={onHandleSelectedID}
+            />
           ))}
 
           {emptyRows > 0 && (
@@ -194,21 +265,80 @@ export default function CustomPaginationActionsTable({ listLocal }) {
     </TableContainer>
     <div className="table-quanlydiaphuong__pagination">
       <div className="table-quanlydiaphuong__pagination--button">
-        <Button startIcon={<AddSharpIcon />} variant="contained" style={{textTransform:"none", backgroundColor:"#35baf6", color:"#FFF", marginRight:"10px"}}>
+        <Button 
+          onClick={handleOnOpen}
+          startIcon={<AddSharpIcon />} 
+          variant="contained" 
+          style={{textTransform:"none", backgroundColor:"#35baf6", color:"#FFF", marginRight:"10px"}}>
           Thêm
         </Button>
-        <Button startIcon={<EditIcon />} variant="contained" style={{textTransform:"none", backgroundColor:"#8bc34a", color:"#FFF", marginRight:"10px"}}>
+        <Button
+          onClick={handleOnEdit}
+          className={classes.disabledButton}
+          disabled={(isEmpty(selectedID)) ? true : (selectedID.length>1 ? true : false)}
+          startIcon={<EditIcon />} 
+          variant="contained" 
+          style={{textTransform:"none", backgroundColor:"#8bc34a", color:"#FFF", marginRight:"10px"}}
+        >
           Sửa
         </Button>
-        <Button startIcon={<RemoveIcon />} variant="contained" style={{textTransform:"none", backgroundColor:"#f50057", color:"#FFF", marginRight:"10px"}}>
+        <Button
+          onClick={handleOnOpenDelete}
+          className={classes.disabledButton}
+          disabled={isEmpty(selectedID) ? true : false}
+          startIcon={<RemoveIcon />} 
+          variant="contained" 
+          style={{textTransform:"none", backgroundColor:"#f50057", color:"#FFF", marginRight:"10px"}}
+        >
           Xóa
         </Button>
-        <Button startIcon={<CustomShareIcon />} variant="contained" style={{textTransform:"none", backgroundColor:"#35baf6", color:"#FFF", marginRight:"10px"}}>
+        <Button 
+          onClick={handleOnOpenMerge}
+          startIcon={<CustomShareIcon />}
+          className={classes.disabledButton}
+          disabled={isEmpty(selectedID) ? true : (selectedID.length>1 ? false : true)}
+          variant="contained" 
+          style={{textTransform:"none", backgroundColor:"#35baf6", color:"#FFF", marginRight:"10px"}}
+        >
           Gộp thôn
         </Button>
-        <Button startIcon={<SwapHorizIcon />} variant="contained" style={{textTransform:"none", backgroundColor:"#35baf6", color:"#FFF"}}>
+        <Button
+          className={classes.disabledButton}
+          disabled={isEmpty(selectedID) ? true : false}
+          startIcon={<SwapHorizIcon />} 
+          variant="contained" 
+          style={{textTransform:"none", backgroundColor:"#35baf6", color:"#FFF"}}
+        >
           Chuyển thôn
         </Button>
+        {/* Dialog */}
+        <DialogLocal
+          open={open}
+          handleOnClose={handleOnClose}
+          local={selectedLocal}
+          onSubmitForm={handleOnSubmitForm}
+        />
+        <DialogComfirm
+          open={openDelete}
+          handleOnClose={handleOnCloseDelete}
+          onDelete={onDelete}
+          id={selectedID}
+          title="Thông báo"
+          content="Bạn có muốn xóa thôn vào thùng rác không?"
+        />
+        <DialogMergeLocal
+          open={openMerge}
+          listChecked={
+            listLocal.filter(e => {
+              for(let value of selectedID){
+                if(value===e.id_thon)
+                  return e;
+              }
+            })
+          }
+          handleOnClose={handleOnCloseMerge}
+          onSubmitForm={handleOnSubmitMergeLocal}
+        />
       </div>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}

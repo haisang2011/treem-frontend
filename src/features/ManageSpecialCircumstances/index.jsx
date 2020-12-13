@@ -4,20 +4,31 @@ import PropTypes from 'prop-types'
 import { CssBaseline, Paper } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { fetchWardRequest, fetchVillageRequest } from '../../actions/commonAction';
-import { fetchDataSpecialCircumstancesRequest } from '../../actions/manageChildrenAction';
+import { fetchDataSpecialCircumstancesRequest, downloadFileExcelDataHCDBRequest } from '../../actions/manageChildrenAction';
 import SearchForm from '../ManageSpecialCircumstances/components/SearchForm';
 import Table from '../ManageSpecialCircumstances/components/Table';
+import Snackbars from '../../components/Snackbars';
 
 function ManageSpecialCircumstances({
     locationUser, quanhuyenList, thonList, phuongxaList,
     fetchWardRequest, fetchVillageRequest, fetchDataSpecialCircumstancesRequest,
-    listHCDB, specialCircumstances, totalSpecialCircumstances,
+    listHCDB, specialCircumstances, totalSpecialCircumstances, downloadFileExcelDataHCDBRequest,
 }) {
 
+    const {
+        id_tinh, id_quan, id_xa,
+        thanhpho, quanhuyen, phuongxa
+    } = locationUser
+
+    const [snackbars, setSnackbars] = React.useState(false);
+    const onHandleSnackbars = () => {
+        setSnackbars(false);
+    }
+
     const [values, setValues] = React.useState({
-        thanhpho: '',
-        huyen: '',
-        xa: '',
+        thanhpho: id_tinh || '',
+        huyen: id_quan || '',
+        xa: id_xa || '',
         thon : '',
         hoancanh : '',
         tentreem: '',
@@ -26,7 +37,7 @@ function ManageSpecialCircumstances({
         timefinish: '',
         page: null,
     })
-
+console.log({values})
     React.useEffect(() => {
         fetchDataSpecialCircumstancesRequest(values)
     }, [values])
@@ -48,12 +59,13 @@ function ManageSpecialCircumstances({
 
     }
 
-    const onSubmitForm = (value) => {
+    const onSubmitForm = (value, statusSubmit) => {
 
-        setValues({
+        
+        const dataSubmit = {
             thanhpho: value.tinhthanhpho ? value.tinhthanhpho : '',
             huyen: value.quanhuyen ? value.quanhuyen : '',
-            xa: value.quanhuyen ? value.phuongxa : '',
+            xa: value.phuongxa ? value.phuongxa : '',
             thon : value.thon ? value.thon : '',
             hoancanh : value.chitieu ? value.chitieu : '',
             tentreem : value.hoten ? value.hoten : '',
@@ -61,11 +73,41 @@ function ManageSpecialCircumstances({
             timestart : value.ngaybatdau ? value.ngaybatdau : '',
             timefinish : value.ngayketthuc ? value.ngayketthuc : '',
             page : null,
-        })
+        }
+
+        if(statusSubmit===1){
+            setValues({
+                thanhpho: value.tinhthanhpho ? value.tinhthanhpho : '',
+                huyen: value.quanhuyen ? value.quanhuyen : '',
+                xa: value.phuongxa ? value.phuongxa : '',
+                thon : value.thon ? value.thon : '',
+                hoancanh : value.chitieu ? value.chitieu : '',
+                tentreem : value.hoten ? value.hoten : '',
+                magiadinh : value.id_giadinh ? value.id_giadinh : '',
+                timestart : value.ngaybatdau ? value.ngaybatdau : '',
+                timefinish : value.ngayketthuc ? value.ngayketthuc : '',
+                page : null,
+            })
+        }else if(statusSubmit===2){
+            if(!dataSubmit.huyen){
+                setSnackbars(true);
+            }else{
+                downloadFileExcelDataHCDBRequest(dataSubmit)
+            }
+        }else{
+            /* TODO SOMETHING */
+        }
+
     }
     
     return (
         <div className="manageSpecialCircumstances">
+            <Snackbars
+                open={snackbars}
+                onHandleSnackbars={onHandleSnackbars}
+                message="Phải chọn Quận/Huyện để xuất dữ liệu"
+                type={1010}
+            />
             <Paper>
             <CssBaseline />
             <div className="manageSpecialCircumstances__searchForm">
@@ -108,5 +150,5 @@ const mapStateToProps = state => ({
     totalSpecialCircumstances : state.manageChildren.totalSpecialCircumstances,
 })
 
-export default connect(mapStateToProps, { fetchWardRequest, fetchVillageRequest, fetchDataSpecialCircumstancesRequest })(ManageSpecialCircumstances)
+export default connect(mapStateToProps, { fetchWardRequest, fetchVillageRequest, fetchDataSpecialCircumstancesRequest, downloadFileExcelDataHCDBRequest })(ManageSpecialCircumstances)
 

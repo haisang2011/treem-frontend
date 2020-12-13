@@ -29,6 +29,35 @@ const manageAccountApi = {
         tokenConfig(store.getState)
     );
   },
+  getAccountSearchHaveParams: (params) => {
+    const url = `/account`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.get(
+        url,
+        {
+          params,
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  updateAccount: (params) => {
+    const id = params.id_taikhoan;
+    delete params.id_taikhoan;
+    const body = params;
+    const url = `/account/update/${id}`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.put(
+        url,
+        body,
+        {
+          headers : {
+            'access-token' : accessToken,
+          },
+        }
+    );
+  },
 }
 
 export default manageAccountApi;

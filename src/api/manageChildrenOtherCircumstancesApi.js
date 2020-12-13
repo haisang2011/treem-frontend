@@ -50,6 +50,21 @@ const manageChidlrenOtherCircumstancesApi = {
         }
     );
   },
+  downloadFileExcelHCK: (params) => {
+    const url = `/excel/download/hck`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.get(
+        url,
+        {
+          params,
+          responseType: 'blob',
+          headers : {
+            'access-token' : accessToken,
+            'content-type': 'application/vnd.ms-excel;charset=UTF-8',
+          }
+        }
+    );
+  },
 }
 
 export default manageChidlrenOtherCircumstancesApi;

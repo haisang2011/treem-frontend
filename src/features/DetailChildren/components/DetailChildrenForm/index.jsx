@@ -9,13 +9,20 @@ import CheckBoxField from '../../../../custom-fields/CheckBoxField';
 import HoanCanhDacBietField from '../../../../custom-fields/HoanCanhDacBietField';
 import DateField from '../../../../custom-fields/DateField';
 import SaveIcon from '@material-ui/icons/Save';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import CloseIcon from '@material-ui/icons/Close';
-import { useDispatch } from 'react-redux'
 import { Status } from '../../../../contants/actionType'
 import danToc from '../../../../helpers/getNation';
 import {Gender} from '../../../../helpers/getGender';
 import {TTHT} from '../../../../helpers/getListTinhTrangHocTap';
 import {LHCN} from '../../../../helpers/getLopHocCaoNhat';
+import * as ActionType from '../../../../contants/actionType';
+import moment from 'moment';
+import DialogFullScreen from '../../../../components/DialogFullScreen';
+import Snackbars from '../../../../components/Snackbars';
+import { clearErrors } from '../../../../actions/errorAction'
+import { useDispatch, useSelector, connect } from 'react-redux'
+// import { DetailChildrenSchema } from '../../../../validation/Detail';
 
 const useStyles = makeStyles(() => ({
     root : {
@@ -25,61 +32,159 @@ const useStyles = makeStyles(() => ({
     }
 }))
 
-function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
+function DetailChildrenForm({
+    onHandleCloseDetail,
+    detailChildrenInfo, 
+    isShowDetailChildrenFollowIdFamily, 
+    thonList,
+    onSubmitForm,
+    msg, code, clearErrors,
+}) {
+
+    const dispatch = useDispatch();
 
     const classes = useStyles();
 
     const {
         id_tinhthanhpho, id_quanhuyen, id_phuongxa,
-        ten_tinhthanhpho, ten_quanhuyen, ten_phuongxa,
+        ten_tinhthanhpho, ten_quanhuyen, ten_phuongxa, id_thon, tenthon,
         id_giadinh, hotencha, hotenme, nguoinuoiduong,
         sodienthoai, diachi, id_treem, ngaysinh, gioitinh,
-        hoten, dantoc, tinhtranghoctap, lophoccaonhat, ghichu,
-        hoancanh,
+        hoten, dantoc, trinhdohocvan, ghichu,
+        hoancanh, cha, me, idNguoiNuoi,
     } = detailChildrenInfo
 
-    console.log("Tre Em ::: ",detailChildrenInfo)
-
-    const initialValues = {
+    const [initialValues, setInitialValues] = React.useState({
         tinhthanhpho: id_tinhthanhpho || '',
         quanhuyen: id_quanhuyen || '',
         phuongxa: id_phuongxa || '',
-        thon: '',
+        thon: id_thon || '',
         id_giadinh: id_giadinh ? id_giadinh : '',
         hotencha: hotencha ? hotencha : '',
         hotenme: hotenme ? hotenme : '',
+        cha: cha ? cha : '',
+        me: me ? me : '',
+        idNguoiNuoi: idNguoiNuoi ? idNguoiNuoi : '',
         nguoinuoiduong: nguoinuoiduong ? nguoinuoiduong : '',
         sodienthoai: sodienthoai ? sodienthoai : '',
         diachi: diachi ? diachi : '',
+        hoancanh: hoancanh ? hoancanh : 3,
         id_treem: id_treem ? id_treem : '',
         hoten: hoten ? hoten : '',
-        ngaysinh: '',
+        ngaysinh: ngaysinh ? moment(ngaysinh).format('YYYY/MM/DD') : '',
         dantoc: dantoc ? dantoc :'',
         gioitinh: gioitinh ? gioitinh :'',
-        lophoccaonhat: lophoccaonhat ? lophoccaonhat :'',
-        tinhtranghoctap: tinhtranghoctap ? tinhtranghoctap :'',
+        trinhdohocvan: trinhdohocvan ? trinhdohocvan :'',
         ghichu: ghichu ? ghichu :'',
+    })
+    // const initialValues = {
+    //     tinhthanhpho: id_tinhthanhpho || '',
+    //     quanhuyen: id_quanhuyen || '',
+    //     phuongxa: id_phuongxa || '',
+    //     thon: id_thon || '',
+    //     id_giadinh: id_giadinh ? id_giadinh : '',
+    //     hotencha: hotencha ? hotencha : '',
+    //     hotenme: hotenme ? hotenme : '',
+    //     cha: cha ? cha : '',
+    //     me: me ? me : '',
+    //     nguoinuoiduong: nguoinuoiduong ? nguoinuoiduong : '',
+    //     sodienthoai: sodienthoai ? sodienthoai : '',
+    //     diachi: diachi ? diachi : '',
+    //     hoancanh: hoancanh ? hoancanh : 3,
+    //     id_treem: id_treem ? id_treem : '',
+    //     hoten: hoten ? hoten : '',
+    //     ngaysinh: ngaysinh ? moment(ngaysinh).format('YYYY/MM/DD') : '',
+    //     dantoc: dantoc ? dantoc :'',
+    //     gioitinh: gioitinh ? gioitinh :'',
+    //     trinhdohocvan: trinhdohocvan ? trinhdohocvan :'',
+    //     ghichu: ghichu ? ghichu :'',
+    // }
+
+    const onSubmitFormik = (values, action) => {
+        onSubmitForm(values);
+        // dispatch({
+        //     type: ActionType.ManageChildren.CLEANUP_DATA_DETAIL_CHILDREN,
+        // });
+        dispatch({
+            type: ActionType.Status.CLOSE_DETAIL_CHILDREN,
+            payload: false,
+        });
+        // values.preventDefault();
     }
 
-    const onSubmitFormik = () => {
-        
+    const [checkBox, setCheckBox] = React.useState(hoancanh);
+    const [checkedCheckBox, setCheckedCheckBox] = React.useState({
+        hongheo: checkBox===1 ? true : false,
+        hocanngheo: checkBox===2 ? true : false,
+    })
+
+    const onHandleCheckBox = (type, checked) => {
+        setCheckBox(type);
+        setCheckedCheckBox({
+            hongheo: (type===1 && checked) ? true : false,
+            hocanngheo: (type===2 && checked) ? true : false,
+        });
+    }
+
+    /* Open Dialog Full Screen */
+    const [statusPositionFamily, setStatusPositionFamily] = React.useState(null);
+    const [openFullScreen, setOpenFullSreen] = React.useState(false);
+    const handleOnClick = (status) => {
+        setStatusPositionFamily(status);
+        setOpenFullSreen(true);
+    }
+
+    const handleOnChangeParent = (values) => {
+        if(statusPositionFamily===1){
+            setInitialValues({
+                ...initialValues,
+                cha: values.id_person,
+                hotencha: values.hoten
+            })
+        }else if(statusPositionFamily===2){
+            setInitialValues({
+                ...initialValues,
+                me: values.id_person,
+                hotenme: values.hoten
+            })
+        }else if(statusPositionFamily===3){
+            setInitialValues({
+                ...initialValues,
+                idNguoiNuoi: values.id_person,
+                nguoinuoiduong: values.hoten
+            })
+        }
+    }
+
+    const [snackbars, setSnackbars] = React.useState(false);
+    React.useEffect(() => {
+        if(msg==="Add successful" && code===200){
+            setSnackbars(true);
+        }
+    }, [msg, code])
+
+    const onHandleSnackbars = () => {
+        clearErrors();
+        setSnackbars(false);
     }
 
     return (
         <div className="detailChildrenForm">
             <Formik
+                enableReinitialize
                 initialValues={initialValues}
+                // validationSchema={DetailChildrenSchema}
                 onSubmit={onSubmitFormik}
             >
             {formikProps => {
 
                 return (
                     <Form autoComplete="off" className="detailChildrenForm__formik">
-                        <Grid container xs={12} spacing={1}>
+                        <Grid container item xs={12} spacing={1}>
                             <Button
                                 startIcon={<SaveIcon />}
                                 size="small"
-                                type="submit" 
+                                type="submit"
                                 variant="contained" 
                                 style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px",marginRight:"5px"}}
                             >
@@ -92,13 +197,13 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                 type="submit" 
                                 variant="contained" 
                                 style={{textTransform: "none",fontSize:"13px",marginRight:"5px"}}
-                                onClick={onHandleCloseDetail}
+                                onClick={() => onHandleCloseDetail(false)}
                             >
                                 Đóng
                             </Button>
                         </Grid>
 
-                        <Grid container xs={12} className={classes.root} style={{marginTop:"10px"}}>
+                        <Grid container xs={12} item className={classes.root} style={{marginTop:"10px"}}>
                             {/* <Paper variant="outlined" elevation={3} className="detailChildrenForm__formik--paper"> */}
 
                                 {/* Địa phương quản lý */}
@@ -115,7 +220,7 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                                 name="tinhthanhpho"
                                                 component={SelectField}
                                                 
-                                                disabled={ten_tinhthanhpho ? true : false}
+                                                disabled={ten_tinhthanhpho ? true : (isShowDetailChildrenFollowIdFamily ? true : false)}
                                                 valueLocation={ten_tinhthanhpho ? ten_tinhthanhpho : null}
                                                 label="Tỉnh Thành Phố"
                                                 
@@ -129,7 +234,7 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                                     name="quanhuyen"
                                                     component={SelectField}
 
-                                                    disabled={ten_quanhuyen ? true : false}
+                                                    disabled={ten_quanhuyen ? true : (isShowDetailChildrenFollowIdFamily ? true : false)}
                                                     valueLocation={ten_quanhuyen ? ten_quanhuyen : null}
                                                     label="Quận Huyện"
                                                     
@@ -147,7 +252,7 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                                 name="phuongxa"
                                                 component={SelectField}
 
-                                                disabled={ten_phuongxa ? true : false}
+                                                disabled={ten_phuongxa ? true : (isShowDetailChildrenFollowIdFamily ? true : false)}
                                                 valueLocation={ten_phuongxa ? ten_phuongxa : null}
                                                 label="Phường Xã"
                                                 
@@ -161,6 +266,10 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                                     name="thon"
                                                     component={SelectField}
 
+                                                    disabled={isShowDetailChildrenFollowIdFamily ? true : false}
+                                                    valueDetail={id_thon ? id_thon : null}
+                                                    valueLocation={tenthon ? tenthon : null}
+                                                    thonList={thonList.length > 0 ? thonList : null}
                                                     label="Thôn Xóm"
                                                     
                                                 />
@@ -186,7 +295,7 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                                 name="id_giadinh"
                                                 component={InputField}
 
-                                                disabled={id_giadinh ? true : false}
+                                                disabled={true}
                                                 label="Mã gia đình"
                                                 
                                             />
@@ -194,14 +303,30 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                     </Grid>
                                     <Grid container item xs={6} justify="space-between" alignItems="center">
                                         <Grid item container justify="flex-end" xs={4}>Họ tên cha</Grid>
-                                        <Grid item xs={8}>
+                                        <Grid item xs={8} container alignItems="center">
+                                            <Grid item xs={9}>
                                             <Field 
+                                                className="detailChildrenForm__formik--field_father"
                                                 name="hotencha"
                                                 component={InputField}
 
+                                                disabled={true}
                                                 label="Họ tên cha"
                                                 
                                             />
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                            <Button
+                                                disabled={isShowDetailChildrenFollowIdFamily ? true : false}
+                                                className="detailChildrenForm__formik--button_father"
+                                                size="small"
+                                                onClick={() => handleOnClick(1)}
+                                                variant="contained" 
+                                                style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px"}}
+                                            >
+                                                <MoreHorizIcon />
+                                            </Button>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -211,26 +336,56 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                 <Grid item container xs={12} className={classes.root}>
                                     <Grid container item xs={6} justify="space-between" alignItems="center">
                                         <Grid item container justify="flex-end" xs={4}>Họ tên mẹ</Grid>
-                                        <Grid item xs={8}>
-                                            <Field 
-                                                name="hotenme"
-                                                component={InputField}
+                                        <Grid item xs={8} container alignItems="center">
+                                            <Grid item xs={9}>
+                                                <Field 
+                                                    name="hotenme"
+                                                    component={InputField}
 
-                                                label="Họ tên mẹ"
-                                                
-                                            />
+                                                    disabled={true}
+                                                    label="Họ tên mẹ"
+                                                    
+                                                />
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <Button
+                                                    disabled={isShowDetailChildrenFollowIdFamily ? true : false}
+                                                    className="detailChildrenForm__formik--button_father"
+                                                    size="small"
+                                                    onClick={() => handleOnClick(2)}
+                                                    variant="contained" 
+                                                    style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px"}}
+                                                >
+                                                    <MoreHorizIcon />
+                                                </Button>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                     <Grid container item xs={6} justify="space-between" alignItems="center">
                                         <Grid item container justify="flex-end" xs={4}>Người nuôi dưỡng</Grid>
-                                        <Grid item xs={8}>
-                                            <Field 
-                                                name="nguoinuoiduong"
-                                                component={InputField}
+                                        <Grid item xs={8} container alignItems="center">
+                                            <Grid item xs={9}>
+                                                <Field 
+                                                    name="nguoinuoiduong"
+                                                    component={InputField}
 
-                                                label="Người nuôi dưỡng"
-                                                
-                                            />
+                                                    disabled={true}
+                                                    label="Người nuôi dưỡng"
+                                                    
+                                                />
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <Button
+                                                    disabled={isShowDetailChildrenFollowIdFamily ? true : false}
+                                                    className="detailChildrenForm__formik--button_father"
+                                                    size="small"
+                                                    onClick={() => handleOnClick(3)}
+                                                    variant="contained" 
+                                                    style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px"}}
+                                                >
+                                                    <MoreHorizIcon />
+                                                </Button>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -242,9 +397,10 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                         <Grid item container justify="flex-end" xs={4}>Điện thoại</Grid>
                                         <Grid item xs={8}>
                                             <Field 
-                                                name="dienthoai"
+                                                name="sodienthoai"
                                                 component={InputField}
 
+                                                disabled={isShowDetailChildrenFollowIdFamily ? true : false}
                                                 label="Điện thoại"
                                                 
                                             />
@@ -254,8 +410,11 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                         <Grid container item xs={6} justify="center" alignItems="center">
                                             <Grid item xs={2}>
                                                 <Field 
-                                                    name="hongheo"
-                                                    hongheo={hoancanh===1 ? true : false}
+                                                    name="hoancanh"
+                                                    disabled={isShowDetailChildrenFollowIdFamily ? true : false}
+                                                    hongheo={checkBox===1 ? true : false}
+                                                    hoancanh={checkedCheckBox.hongheo}
+                                                    onHandleCheckBox={onHandleCheckBox}
                                                     component={CheckBoxField}
                                                 />
                                             </Grid>
@@ -266,8 +425,11 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                         <Grid container item xs={6} alignItems="center">
                                             <Grid item xs={2}>
                                                 <Field 
-                                                    name="hocanngheo"
-                                                    hocanngheo={hoancanh===2 ? true : false}
+                                                    name="hoancanh"
+                                                    disabled={isShowDetailChildrenFollowIdFamily ? true : false}
+                                                    hocanngheo={checkBox===2 ? true : false}
+                                                    hoancanh={checkedCheckBox.hocanngheo}
+                                                    onHandleCheckBox={onHandleCheckBox}
                                                     component={CheckBoxField}
                                                 />
                                             </Grid>
@@ -287,6 +449,7 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                             name="diachi"
                                             component={InputField}
 
+                                            disabled={isShowDetailChildrenFollowIdFamily ? true : false}
                                             label="Địa chỉ"
                                         />
                                     </Grid>
@@ -309,7 +472,7 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                                 name="id_treem"
                                                 component={InputField}
 
-                                                disabled={id_treem ? true : false}
+                                                disabled={true}
                                                 label="Mã trẻ em"
                                                 
                                             />
@@ -377,14 +540,14 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                         </Grid>
                                     </Grid>
                                     <Grid container justify="space-between" alignItems="center" item xs={6}>
-                                        <Grid item container justify="flex-end" xs={4}>Lớp học cao nhất</Grid>
+                                        <Grid item container justify="flex-end" xs={4}>Trình độ học vấn</Grid>
                                         <Grid item xs={8}>
                                             <Field 
-                                                name="lophoccaonhat"
+                                                name="trinhdohocvan"
                                                 component={SelectField}
 
-                                                valueDetail={lophoccaonhat ? lophoccaonhat : null}
-                                                label="Lớp học cao nhất"
+                                                valueDetail={trinhdohocvan ? trinhdohocvan : null}
+                                                label="Trình độ học vấn"
                                                 lopHocCaoNhat={LHCN}
                                             />
                                         </Grid>
@@ -394,7 +557,7 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
 
                                 {/* Row */}
                                 <Grid container item xs={12} className={classes.root}>
-                                    <Grid container justify="space-between" alignItems="center" item xs={6}>
+                                    {/* <Grid container justify="space-between" alignItems="center" item xs={6}>
                                         <Grid item container justify="flex-end" xs={4}>Tình trạng học tập</Grid>
                                         <Grid item xs={8}>
                                             <Field 
@@ -406,7 +569,7 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
                                                 tinhTrangHocTap={TTHT}
                                             />
                                         </Grid>
-                                    </Grid>
+                                    </Grid> */}
                                     <Grid container justify="space-between" alignItems="center" item xs={6}>
                                         <Grid item container justify="flex-end" xs={4}>Ghi chú</Grid>
                                         <Grid item xs={8}>
@@ -427,7 +590,18 @@ function DetailChildrenForm({ onHandleCloseDetail, detailChildrenInfo, }) {
 
                             {/* </Paper> */}
                         </Grid>
-
+                                {/* Dialog */}
+                                <DialogFullScreen
+                                    open={openFullScreen}
+                                    handleOnClose={() => setOpenFullSreen(false)}
+                                    handleOnChangeParent={handleOnChangeParent}
+                                    statusFamily={statusPositionFamily}
+                                />
+                                <Snackbars
+                                    open={snackbars}
+                                    onHandleSnackbars={onHandleSnackbars}
+                                    message={msg}
+                                />
                     </Form>
                 )
             }}
@@ -440,5 +614,10 @@ DetailChildrenForm.propTypes = {
 
 }
 
-export default DetailChildrenForm
+const mapStateToProps = state => ({
+    msg: state.error.msg,
+    code: state.error.code,
+})
+
+export default connect(mapStateToProps, { clearErrors })(DetailChildrenForm)
 

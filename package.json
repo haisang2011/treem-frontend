@@ -15,7 +15,9 @@
     "antd": "^4.7.2",
     "axios": "^0.20.0",
     "date-fns": "^2.16.1",
+    "file-saver": "^2.0.2",
     "formik": "^2.1.7",
+    "js-file-download": "^0.4.12",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "node-sass": "^4.14.1",
@@ -30,6 +32,7 @@
     "react-table": "^7.5.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "xlsx": "^0.16.8",
     "yup": "^0.29.3"
   },
   "scripts": {

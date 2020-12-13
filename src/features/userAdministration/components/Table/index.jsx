@@ -4,7 +4,7 @@ import Moment from 'react-moment';
 import Caregiver from '../../../../helpers/mergeFatherMotherToOne';
 import CustomAddress from '../../../../helpers/customLengthAddress';
 import PropTypes from 'prop-types';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles, useTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -25,6 +25,21 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DescriptionIcon from '@material-ui/icons/Description';
 import RemoveIcon from '@material-ui/icons/Remove';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import RowTable from '../RowTable';
+import { lightGreen, lightBlue } from '@material-ui/core/colors';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import FormViewAction from '../FormViewAction';
+import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
+import CloseIcon from '@material-ui/icons/Close';
+
+
+const ThemeButtonView = createMuiTheme({ palette: { primary: { main: lightGreen[500] } } })
+const ThemeViewDialog = createMuiTheme({ palette: { primary: { main: lightBlue.A200 } } })
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -132,12 +147,32 @@ const useStyles2 = makeStyles({
     "& .MuiTableCell-root" : {
       padding : "8px",
     }
+  },
+  disabledButton : {
+    "&:disabled": {
+      backgroundColor: lightGreen[200],
+    }
+  },
+  dialog: {
+    "& .MuiDialog-paperWidthSm":{
+      width: 550,
+      maxWidth: 550,
+    },
+
+    "& .MuiDialogTitle-root": {
+      backgroundColor: lightBlue.A200
+    },
+
+    "& .MuiTypography-h6": {
+      color: "#FFF",
+    }
   }
 });
 
-export default function CustomPaginationActionsTable({ listAccount }) {
+export default function CustomPaginationActionsTable({ listAccount, onSubmitFormUpdate }) {
 
   const classes = useStyles2();
+  const [open, setOpen] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -151,6 +186,16 @@ export default function CustomPaginationActionsTable({ listAccount }) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const [selectedID, setSelectedID] = React.useState(null);
+  const onHandleSelectedID = (tentaikhoan) => {
+    setSelectedID(tentaikhoan);
+  }
+
+  const onHandleUpdateAccount = (values) => {
+    onSubmitFormUpdate(values)
+    setOpen(false);
+  }
 
   return (
     <div className="table-quantringuoidung">
@@ -168,20 +213,13 @@ export default function CustomPaginationActionsTable({ listAccount }) {
             ? listAccount.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : listAccount
           ).map((row, index) => (
-            <TableRow key={row.tentaikhoan} style={(index % 2) ? { backgroundColor: "#e9e9e9" } : { backgroundColor: "white" }}>
-              <TableCell>
-                {index+1}
-              </TableCell>
-              <TableCell>
-                {row.tentaikhoan}
-              </TableCell>
-              <TableCell>
-                {row.tenhienthi}
-              </TableCell>
-              <TableCell>
-                {row.email}
-              </TableCell>
-            </TableRow>
+            <RowTable
+              key={row.tentaikhoan}
+              index={index}
+              row={row}
+              selectedID={selectedID}
+              onHandleSelectedID={onHandleSelectedID}
+            />
           ))}
 
           {emptyRows > 0 && (
@@ -194,10 +232,31 @@ export default function CustomPaginationActionsTable({ listAccount }) {
     </TableContainer>
     <div className="table-quantringuoidung__pagination">
       <div className="table-quantringuoidung__pagination--button">
-        <Button variant="contained" style={{textTransform:"none", backgroundColor:"#357a38", color:"#FFF"}}>
-          <VisibilityIcon style={{marginRight:"5px"}} />
-          Xem
-        </Button>
+        <MuiThemeProvider theme={ThemeButtonView}>
+          <Button 
+            className={classes.disabledButton}
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+            style={{textTransform:"none", color:"#FFF"}}
+            disabled={!selectedID}
+          >
+            <VisibilityIcon style={{marginRight:"5px"}} />
+            Xem
+          </Button>
+        </MuiThemeProvider>
+        <MuiThemeProvider theme={ThemeViewDialog}>
+          <Dialog open={open} onClose={() => setOpen(false)} className={classes.dialog}>
+            <DialogTitle id="form-dialog-title">Sửa thông tin thành viên</DialogTitle>
+            <DialogContent>
+              <FormViewAction
+                account={selectedID ? (listAccount.filter(({tentaikhoan}) => tentaikhoan===selectedID)) : null}
+                onHandleUpdateAccount={onHandleUpdateAccount}
+                handleOnClose={() => setOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </MuiThemeProvider>
       </div>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}

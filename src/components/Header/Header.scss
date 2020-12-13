@@ -15,10 +15,12 @@
 
     &__right {
         display: flex;
+        justify-content: flex-end;
         position: relative;
         padding : 7px;
+        width: 300px;
         align-items: center;
-        margin : 0.5rem 1.5rem 0 0;
+        // margin : 0.5rem 1.5rem 0 0;
         cursor: pointer;
         
         &--user {
@@ -30,7 +32,7 @@
 
         &--avatar {
             margin-right : 10px;
-            width: 1.85rem !important;
+            width: 1.95rem !important;
             height: 1.85rem !important;
         }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-// import './Table.scss';
+import './Table.scss';
 import Moment from 'react-moment';
 import Caregiver from '../../../../helpers/mergeFatherMotherToOne';
 import CustomAddress from '../../../../helpers/customLengthAddress';
@@ -181,12 +181,11 @@ export default function CustomPaginationActionsTable({ otherCircumstances, listH
   };
 
   return (
-    <div className="table-hoancanhdacbiet">
+    <div className="table-nguycohoancanhdacbiet">
     <TableContainer component={Paper} className={classes.container}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell />
             {columns.map(({title, style}) => (
               <TableCell key={title} style={style}>{title}</TableCell>
             ))}
@@ -198,11 +197,6 @@ export default function CustomPaginationActionsTable({ otherCircumstances, listH
         <TableBody>
           {otherCircumstances.length>0 && otherCircumstances.map((row, index) => (
             <TableRow key={row.id_treem} style={(index % 2) ? { backgroundColor: "#e9e9e9" } : { backgroundColor: "white" }}>
-              <TableCell style={{ width: 120 }}>
-                <AddIcon />
-                <EditIcon />
-                <DeleteIcon />
-              </TableCell>
               <TableCell style={{ width: 140 }}>
                 {row.id_giadinh}
               </TableCell>
@@ -252,7 +246,7 @@ export default function CustomPaginationActionsTable({ otherCircumstances, listH
         </TableBody>
       </Table>
     </TableContainer>
-    <div className="table-hoancanhdacbiet__pagination">
+    <div className="table-nguycohoancanhdacbiet__pagination">
       <TablePagination
         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
         colSpan={3}

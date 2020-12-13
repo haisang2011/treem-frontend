@@ -64,6 +64,137 @@ const manageChidlrenApi = {
         }
     );
   },
+  addChildrenWithFamily: (body) => {
+    const url = `/quan-ly-tre-em/addwithfamily`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.post(
+        url,
+        body,
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  addChildrenOtherFamily: (body) => {
+    const url = `/quan-ly-tre-em/addotherfamily`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.post(
+        url,
+        body,
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  updateInfoChildren: (body) => {
+    const { id_treem } = body;
+    const url = `/quan-ly-tre-em/update/${id_treem}`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.put(
+        url,
+        body,
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  deleteInfoChildrenIntoTrash: (id) => {
+    const url = `/quan-ly-tre-em/xoa/${id}`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.put(
+        url,
+        null,
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  deleteInfoChildrenMultiIntoTrash: (listId) => {
+    const url = `/quan-ly-tre-em/xoa-multi`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.post(
+        url,
+        {listId},
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  deleteInfoChildrenPhysical: (body) => {
+    const url = `/quan-ly-tre-em/xoaf/:id_treem`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.delete(
+        url,
+        body,
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  updateInfoPerson: (body) => {
+    const { id_person } = body;
+    const url = `/quan-ly-tre-em/update/person/${id_person}`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.put(
+        url,
+        body,
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  addPerson: (body) => {
+    const url = `/quan-ly-tre-em/add/person`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.post(
+        url,
+        body,
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  getInfoPerson: (id) => {
+    const url = `/quan-ly-tre-em/info/person/${id}`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.get(
+        url,
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
+  downloadFileExcelSample: () => {
+    const url = `/excel/sample`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.get(
+        url,
+        {
+          responseType: 'blob',
+          headers : {
+            'access-token' : accessToken,
+            'content-type': 'application/vnd.ms-excel;charset=UTF-8',
+          }
+        }
+    );
+  },
 }
-
 export default manageChidlrenApi;

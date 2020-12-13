@@ -1,7 +1,7 @@
 import { Error } from '../contants/actionType'
 
 const initialState = {
-    msg: {},
+    msg: null,
     code : null,
 }
 
@@ -10,11 +10,11 @@ export default (state=initialState, action) => {
         case Error.GET_ERRORS:
             return {
                 msg: action.payload.msg,
-                status: action.payload.code,
+                code: action.payload.code,
             }
         case Error.CLEAR_ERRORS:
             return {
-                msg: {},
+                msg: null,
                 code: null,
             }    
         default:

@@ -11,6 +11,10 @@ export default (state=initialState, action) => {
                 ...state,
                 listAccount : [...action.payload]
             };
+        case ManageAccount.CLEANUP_ALL_DATA:
+            return {
+                listAccount : []
+            };
         default:
             return state;
     }

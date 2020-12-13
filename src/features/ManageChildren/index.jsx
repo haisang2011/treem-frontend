@@ -7,7 +7,16 @@ import { CssBaseline, Paper } from '@material-ui/core';
 import SearchForm from './components/SearchForm';
 import { connect } from 'react-redux';
 import { fetchWardRequest, fetchVillageRequest } from '../../actions/commonAction';
-import { fetchDataRequest, fetchDataDetailChildren } from '../../actions/manageChildrenAction';
+import { 
+    fetchDataRequest, 
+    fetchDataDetailChildren, 
+    fetchDataDetailChildrenFollowFamily,
+    deleteChildrenIntoTrash,
+    deleteChildrenMultiIntoTrash,
+} from '../../actions/manageChildrenAction';
+import Snackbars from '../../components/Snackbars';
+import Excel from '../../components/Excel';
+import { clearErrors } from '../../actions/errorAction';
 
 const tokenConfig = (getState) => {
 
@@ -33,6 +42,8 @@ function ManageChildren({
     locationUser, quanhuyenList, thonList, phuongxaList,
     fetchWardRequest, fetchVillageRequest, childrenList,
     totalChildrenList, fetchDataRequest, fetchDataDetailChildren,
+    fetchDataDetailChildrenFollowFamily, msg, code, clearErrors,
+    deleteChildrenIntoTrash, deleteChildrenMultiIntoTrash,
 }) {
 
     const [values, setValues] = React.useState({
@@ -48,7 +59,7 @@ function ManageChildren({
         gioitinh: '',
         search: null,
     })
-    
+    console.log({values})
     const onChoose = (id, step) => {
         if(step===1){
             fetchVillageRequest(id)
@@ -70,11 +81,28 @@ function ManageChildren({
             hoten : value.hoten ? value.hoten : '',
             nguoinuoi : value.nguoinuoi ? value.nguoinuoi : '',
             id_giadinh : value.id_giadinh ? value.id_giadinh : '',
-            thungrac : value.thungrac ? value.thungrac : '',
+            thungrac : value.thungrac ? (value.thungrac==='Sử dụng' ? 1 : 2) : '',
             dantoc : value.dantoc ? value.dantoc : '',
             gioitinh : value.gioitinh ? value.gioitinh : '',
             search : null,
         })
+    }
+
+    const [snackbars, setSnackbars] = React.useState(false);
+    React.useEffect(() => {
+        if(msg==="responseMessage" && code===200){
+            setSnackbars(true);
+        }else if(msg==="Update successful" && code===200){
+            setSnackbars(true);
+        }else if(msg==="Delete Children Into Trash Success" && code===200){
+            setSnackbars(true);
+        }else if(msg==="Delete Children Into Trash Error" && code===500){
+            setSnackbars(true);
+        }
+    }, [msg, code])
+    const onHandleSnackbars = () => {
+        clearErrors();
+        setSnackbars(false);
     }
 
     const onHandleButtonPagination = (pageNumber) => {
@@ -86,6 +114,18 @@ function ManageChildren({
 
     const onHandleEdit = (id) => {
         fetchDataDetailChildren(id)
+    }
+
+    const onHandleAdd = (id) => {
+        fetchDataDetailChildrenFollowFamily(id)
+    }
+
+    const onDeleteChildren = (id) => {
+        if(typeof id == 'number'){
+            deleteChildrenIntoTrash(id)
+        }else{
+            deleteChildrenMultiIntoTrash(id)
+        }
     }
 
     return (
@@ -109,10 +149,17 @@ function ManageChildren({
                         totalChildrenList={totalChildrenList}
                         onHandlePagination={onHandleButtonPagination}
                         onHandleEdit={onHandleEdit}
+                        onHandleAdd={onHandleAdd}
+                        onDeleteChildren={onDeleteChildren}
                     />
                 </Paper>
             </div>
             </Paper>
+            <Snackbars
+                open={snackbars}
+                onHandleSnackbars={onHandleSnackbars}
+                message={msg}
+            />
         </div>
     )
 }
@@ -128,7 +175,18 @@ const mapStateToProps = state => ({
     thonList : state.common.thonList,
     childrenList : state.manageChildren.childrenList,
     totalChildrenList : state.manageChildren.totalChildrenList,
+    msg: state.error.msg,
+    code: state.error.code,
 })
 
-export default connect(mapStateToProps, { fetchWardRequest, fetchVillageRequest, fetchDataRequest, fetchDataDetailChildren })(ManageChildren)
+export default connect(mapStateToProps,
+{   fetchWardRequest, 
+    fetchVillageRequest, 
+    fetchDataRequest, 
+    fetchDataDetailChildren,
+    fetchDataDetailChildrenFollowFamily,
+    clearErrors,
+    deleteChildrenIntoTrash,
+    deleteChildrenMultiIntoTrash,
+})(ManageChildren)
 

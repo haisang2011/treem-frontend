@@ -1,4 +1,7 @@
-import { Auth } from '../contants/actionType';
+import { 
+    Auth, ManageChildren, ManageAccount, 
+    CommonList, Error, ManageLocal, Status, ManageFamily
+} from '../contants/actionType';
 import { returnErrors } from './errorAction';
 import { 
     fetchData, 
@@ -18,8 +21,10 @@ import {
 } from './commonAction';
 import { fetchAccountSearch } from './manageAccount';
 import { fetchDataLocal } from './manageLocal';
+import { fetchDataFamily } from './manageFamilyAction';
 import userApi from '../api/userApi';
 import manageChildrenApi from '../api/manageChildrenApi';
+import manageFamilyApi from '../api/manageFamilyApi';
 import SpecialCircumstances from '../api/manageChildrenSpecialCircumstancesApi';
 import RiskSpecialCircumstances from '../api/manageChildrenRiskSpecialApi';
 import OtherCircumstances from '../api/manageChildrenOtherCircumstancesApi';
@@ -182,6 +187,15 @@ export const loadUser = () => (dispatch, getState) => {
 
                          dispatch(fetchData(res.result, res.total))
 
+                         /* Family */
+                        manageFamilyApi.getDataSearch()
+                                       .then(Family => {
+                                           dispatch(fetchDataFamily(Family.result, Family.total))
+                                       })
+                                       .catch(errFamily => {
+                                           dispatch(returnErrors(errFamily.code, errFamily.message));
+                                       })
+
                          dispatch({
                              type : Auth.USER_LOADED,
                              payload : payload
@@ -301,7 +315,7 @@ export const login = (data) => (dispatch, getState) => {
                         /* Risk Special Circumstances */
                         RiskSpecialCircumstances.getDataSearch()
                                             .then(RiskSpecial => {
-                                                dispatch(fetchDataSpecialCircumstances(RiskSpecial.result, RiskSpecial.total))
+                                                dispatch(fetchDataRiskSpecialCircumstances(RiskSpecial.result, RiskSpecial.total))
                                             })
                                             .catch(errRiskSpecial => {
                                                 dispatch(returnErrors(errRiskSpecial.code,errRiskSpecial.message))
@@ -347,6 +361,14 @@ export const login = (data) => (dispatch, getState) => {
                                 })
 
 
+                         /* Family */
+                         manageFamilyApi.getDataSearch()
+                         .then(Family => {
+                             dispatch(fetchDataFamily(Family.result, Family.total))
+                         })
+                         .catch(errFamily => {
+                             dispatch(errFamily.code, errFamily.message)
+                         })
 
                         /* Not need dispatch this */
                         //  dispatch({
@@ -359,20 +381,55 @@ export const login = (data) => (dispatch, getState) => {
                      })
         })
         .catch(err => {
-
-        dispatch(
-            returnErrors(err.code, err.message)
-        );
-        dispatch({
-            type : Auth.LOGIN_FAIL
-        })
+            dispatch(returnErrors(err.response.data.code, err.response.data.message));
+            dispatch({
+                type : Auth.LOGIN_FAIL
+            })
         })
 }
 
 export const logout = () => dispatch => {
-    dispatch({
-        type : Auth.LOGOUT_SUCCESS
-    })
+    userApi.logout()
+           .then(res => {
+                dispatch({
+                    type : Auth.LOGOUT_SUCCESS
+                })
+                dispatch({
+                    type : ManageChildren.CLEANUP_ALL_DATA
+                })
+                dispatch({
+                    type : ManageAccount.CLEANUP_ALL_DATA
+                })
+                dispatch({
+                    type : CommonList.CLEANUP_ALL_DATA
+                })
+                dispatch({
+                    type : ManageLocal.CLEANUP_ALL_DATA
+                })
+                dispatch({
+                    type : ManageFamily.CLEANUP_ALL_DATA
+                })
+                dispatch({
+                    type : Error.CLEAR_ERRORS
+                })
+           })
+           .catch(err => returnErrors(err.code, err.message)) 
+}
+
+export const changePasswordRequest = body => dispatch => {
+    userApi.changePasswordUser(body)
+           .then(res => {
+                dispatch({
+                    type : Auth.LOGIN_SUCCESS,
+                    payload : res
+                })
+           })
+           .catch(err => {
+               dispatch(returnErrors(err.code, err.message))
+               dispatch({
+                    type : Auth.LOGIN_FAIL
+               })
+           }) 
 }
 
 export const tokenConfig = (getState) => {

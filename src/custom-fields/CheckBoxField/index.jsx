@@ -30,34 +30,36 @@ const useStyles = makeStyles((theme) => ({
 function CheckBoxField(props) {
 
     const { 
-        form, field, label, hongheo, hocanngheo
+        form, field, label, hongheo, hocanngheo, hoancanh, disabled,
     } = props
     const { name } = field
 
     const classes = useStyles()
 
-    const [check, setCheck] = React.useState(hongheo ? true : (hocanngheo ? true : false));
+    // const [check, setCheck] = React.useState(hoancanh);
 
     const handleChange = (event) => {
         const checked = event.target.checked;
-        setCheck(checked);
 
-        // const changeEvent = {
-        // target: {
-        //     name: name,
-        //     value: value
-        // }
-        // }
+        props.onHandleCheckBox(hongheo!==undefined ? 1 : (hocanngheo!==undefined ? 2 : 3), checked)
 
-        // field.onChange(changeEvent)
+        const changeEvent = {
+        target: {
+            name: name,
+            value: (hongheo!==undefined && checked) ? 1 : ((hocanngheo!==undefined && checked) ? 2 : 3)
+        }
+        }
+
+        field.onChange(changeEvent)
   };
 
     return (
         <Checkbox
             className={classes.formControl}
-            checked={check}
+            checked={hoancanh}
+            disabled={disabled}
             {...field}
-            // onChange={handleChange}
+            onChange={handleChange}
         />
     )
 }

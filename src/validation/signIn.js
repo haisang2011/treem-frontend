@@ -7,4 +7,13 @@ const SignInSchema = Yup.object().shape({
         .required('mật khẩu không được rỗng')
 });
 
-export default SignInSchema
+const ChangePasswordSchema = Yup.object().shape({
+    oldPassword: Yup.string().required('phải nhập mật khẩu cũ'),
+    newPassword: Yup.string().required('phải nhập mật khẩu mới'),
+    confirmPassword: Yup.string().required('phải xác nhận mật khẩu mới')
+});
+
+export {
+    SignInSchema,
+    ChangePasswordSchema,
+}
