@@ -6,40 +6,36 @@ export const navLinks = [
         title : "Hệ thống",
         dropdown : [
             {
-                subTitle : "Quản trị người dùng",
+                subTitle : "Quản lý người dùng",
                 subPath : '/quantringuoidung',
                 role : ROLE_CITY,
             },
             {
-                subTitle : "Quản trị địa phương",
+                subTitle : "Quản lý địa phương",
                 subPath : '/quantridiaphuong',
                 role : ROLE_WARD
             },
-            {
-                subTitle : "Nhật ký hoạt động",
-                subPath : '/nhatkyhoatdong'
-            },
-            {
-                subTitle : "Đăng xuất",
-                subPath : '/logout'
-            }
+            // {
+            //     subTitle : "Đăng xuất",
+            //     subPath : '/logout'
+            // }
         ]
     },
     {
-        title : "Quản lý hồ sơ trẻ em",
+        title : "Quản lý hồ sơ",
         dropdown : [
             {
                 subTitle : "Nhập liệu trẻ em khác GĐ",
                 notHref : true,
                 role : ROLE_WARD
             },
+            // {
+            //     subTitle : "Nhập liệu trẻ em cùng GĐ",
+            //     notHref : true,
+            //     role : ROLE_WARD
+            // },
             {
-                subTitle : "Nhập liệu trẻ em cùng GĐ",
-                notHref : true,
-                role : ROLE_WARD
-            },
-            {
-                subTitle : "Tìm kiếm thông tin trẻ em",
+                subTitle : "Tìm kiếm thông tin",
                 subPath : '/quanlytreem'
             },
         ]
@@ -79,10 +75,10 @@ export const navLinks = [
                 subTitle : "Danh sách hộ gia đình",
                 subPath : '/khaithachogiadinh'
             },
-            {
-                subTitle : "Tổng hợp báo cáo",
-                subPath : '/tonghopbaocao'
-            },
+            // {
+            //     subTitle : "Tổng hợp báo cáo",
+            //     subPath : '/tonghopbaocao'
+            // },
         ]
     },
     {

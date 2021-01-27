@@ -26,7 +26,7 @@ function Main({ isAuthenticated, locationUser, isShowDetailChildren }) {
 
             { isShowDetailChildren ? <DetailChildren /> : (
                 <>
-                    <Header />
+                    <Header path={path} />
                     <Navbar
                         locationUser={locationUser}
                     />

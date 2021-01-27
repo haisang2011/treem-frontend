@@ -34,11 +34,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { lightGreen, lightBlue } from '@material-ui/core/colors';
 import { searchFatherRequest, searchMotherRequest, searchNguoiNuoiRequest } from '../../../../actions/manageFamilyAction'
 import { amber, cyan } from '@material-ui/core/colors';
-import { isEmpty } from 'lodash';
-import { updatePersonRequest, addPersonRequest } from '../../../../actions/manageChildrenAction';
+import { isEmpty, some } from 'lodash';
+import { updatePersonRequest, addPersonRequest, } from '../../../../actions/manageChildrenAction';
 import Snackbars from '../../../../components/Snackbars';
 import { clearErrors } from '../../../../actions/errorAction';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
 /* Search Form Find Person */
 function FormViewAction({ handleOnClose, onSubmitForm, thonList }) {
@@ -562,6 +563,7 @@ const useStyles = makeStyles(() => ({
 function DetailFamilyForm({ 
   handleOnChangeParent, handleOnClose, updatePersonRequest,
   msg, code, clearErrors, addPersonRequest, statusFamily,
+  infoPerson, handleOnChangeInfoPerson,
 }) {
 
     const dispatch = useDispatch();
@@ -573,15 +575,20 @@ function DetailFamilyForm({
         setOpen(true);
     }
 
+    const [status, setStatus] = React.useState(null);
+    const [statusDisabled,setStatusDisabled] = React.useState(true);
+
     const [isLoading, setIsLoading] = React.useState(true);
 
-    const [person, setPerson] = React.useState(null);
+    // const [person, setPerson] = React.useState({...infoPerson});
+
     const handleOnChoosePerson = (data) => {
       const blockData = {
           dantoc: data.dantoc ? data.dantoc : '',
           diachi: data.diachi ? data.diachi : '',
           gioitinh: data.gioitinh ? data.gioitinh : '',
           hoten: data.hoten ? data.hoten : '',
+          cmnd: data.cmnd ? data.cmnd : '',
           id_giadinh: data.id_giadinh ? data.id_giadinh : '',
           id_person: data.id_person ? data.id_person : '',
           id_phuongxa: data.id_phuongxa ? data.id_phuongxa : '',
@@ -591,28 +598,25 @@ function DetailFamilyForm({
           tenthon: data.tenthon ? data.tenthon : '',
           trinhdohocvan: data.trinhdohocvan ? data.trinhdohocvan : ''
       }
-      setPerson({...blockData});
+      // console.log({blockData})
+      // setPerson({...blockData});
+      setStatusDisabled(true);
+      setInitialValuesPerson({...blockData})
+      handleOnChangeInfoPerson(blockData);
     }
 
     const initialValues = {
-        id_person: (person && !isEmpty(person)) ? person.id_person : '',
-        hoten: (person && !isEmpty(person)) ? person.hoten : '',
-        ngaysinh: (person && !isEmpty(person)) ? person.ngaysinh : null,
-        gioitinh: (person && !isEmpty(person)) ? person.gioitinh : '',
-        dantoc: (person && !isEmpty(person)) ? person.dantoc : '',
-        sodienthoai: (person && !isEmpty(person)) ? person.sodienthoai : '',
-        trinhdohocvan: (person && !isEmpty(person)) ? person.trinhdohocvan : ''
+        id_person: (infoPerson && infoPerson.id_person) ? infoPerson.id_person : '',
+        hoten: (infoPerson && !isEmpty(infoPerson.hoten)) ? infoPerson.hoten : '',
+        cmnd: (infoPerson && !isEmpty(infoPerson.cmnd)) ? infoPerson.cmnd : '',
+        ngaysinh: (infoPerson && !isEmpty(infoPerson.ngaysinh)) ? infoPerson.ngaysinh : null,
+        gioitinh: (infoPerson && !isEmpty(infoPerson.gioitinh)) ? infoPerson.gioitinh : '',
+        dantoc: (infoPerson && !isEmpty(infoPerson.dantoc)) ? infoPerson.dantoc : '',
+        sodienthoai: (infoPerson && !isEmpty(infoPerson.sodienthoai)) ? infoPerson.sodienthoai : '',
+        trinhdohocvan: (infoPerson && !isEmpty(infoPerson.trinhdohocvan)) ? infoPerson.trinhdohocvan : ''
     }
 
-    const [initialValuesPerson, setInitialValuesPerson] = React.useState({
-        id_person: (person && !isEmpty(person)) ? person.id_person : '',
-        hoten: (person && !isEmpty(person)) ? person.hoten : '',
-        ngaysinh: (person && !isEmpty(person)) ? person.ngaysinh : null,
-        gioitinh: (person && !isEmpty(person)) ? person.gioitinh : '',
-        dantoc: (person && !isEmpty(person)) ? person.dantoc : '',
-        sodienthoai: (person && !isEmpty(person)) ? person.sodienthoai : '',
-        trinhdohocvan: (person && !isEmpty(person)) ? person.trinhdohocvan : ''
-    })
+    const [initialValuesPerson, setInitialValuesPerson] = React.useState(null)
 
     const onSubmitFormik = (values, action) => {
         // onSubmitForm(values);
@@ -624,9 +628,40 @@ function DetailFamilyForm({
         //     payload: false,
         // });
         // values.preventDefault();
-        setInitialValuesPerson({...values});
-        handleOnChangeParent(values);
-        handleOnClose();
+        
+        if(status===1){
+          setInitialValuesPerson({...values});
+          handleOnChangeParent(values);
+          handleOnClose();
+        }else if(status===2){
+          const blockData = {
+            dantoc: '',
+            diachi: '',
+            gioitinh: '',
+            hoten: '',
+            cmnnd: '',
+            id_giadinh: '',
+            id_person: '',
+            id_phuongxa: '',
+            id_thon: '',
+            ngaysinh: null,
+            sodienthoai: '',
+            tenthon: '',
+            trinhdohocvan: ''
+          }
+          setStatusDisabled(false);
+          action.setValues({
+            id_person:'',
+            hoten:'',
+            cmnd:'',
+            ngaysinh:null,
+            gioitinh:'',
+            dantoc:'',
+            sodienthoai:'',
+            trinhdohocvan:''
+          });
+          handleOnChangeInfoPerson({});
+        }
     }
 
     const handleOnUpdatePerson = () => {
@@ -664,7 +699,7 @@ function DetailFamilyForm({
     return (
         <div className="detailFamilyForm">
             <Formik
-                enableReinitialize
+                enableReinitialize={true}
                 initialValues={initialValues}
                 onSubmit={onSubmitFormik}                
             >
@@ -683,7 +718,7 @@ function DetailFamilyForm({
                                             component={InputField}
 
                                             disabled={true}
-                                            label="ID cha"
+                                            label="ID"
                                             
                                         />
                                     </Grid>
@@ -718,13 +753,27 @@ function DetailFamilyForm({
 
                         <Grid container xs={12} item className={classes.root} style={{marginTop:"10px"}}>
                             <Grid container justify="space-between" alignItems="center" item xs={12}>
+                                <Grid item container justify="flex-end" xs={2}>CMND</Grid>
+                                <Grid item xs={9} container alignItems="center">
+                                    <Field 
+                                        name="cmnd"
+                                        component={InputField}
+
+                                        label="cmnd"
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid container xs={12} item className={classes.root} style={{marginTop:"10px"}}>
+                            <Grid container justify="space-between" alignItems="center" item xs={12}>
                                 <Grid item container justify="flex-end" xs={2}>Ngày sinh</Grid>
                                 <Grid item xs={9} container alignItems="center">
                                     <Field 
                                         name="ngaysinh"
                                         component={DateField}
 
-                                        // valueDate={(person && !isEmpty(person)) ? person.ngaysinh : null}
+                                        // valueDate={(infoPerson && !isEmpty(infoPerson)) ? infoPerson.ngaysinh : null}
                                         label="Ngày sinh"
                                     />
                                 </Grid>
@@ -801,7 +850,8 @@ function DetailFamilyForm({
                                   // onMouseOver={() => setStatus(1)}
                                   // onMouseOut={() => setStatus(null)}
                                   onClick={handleOnAddPerson}
-                                  disabled={!isEmpty(person)}
+                                  disabled={!isEmpty(infoPerson) ? (!infoPerson.id_person ? false : true) : false}
+                                  // !isEmpty(person)
                                   startIcon={<SaveIcon />}
                                   size="small"
                                   variant="contained" 
@@ -815,7 +865,7 @@ function DetailFamilyForm({
                                   // onMouseOver={() => setStatus(2)}
                                   // onMouseOut={() => setStatus(null)}
                                   onClick={handleOnUpdatePerson}
-                                  disabled={isEmpty(person)}
+                                  disabled={!isEmpty(infoPerson) ? (!infoPerson.id_person ? true : false) : true}
                                   startIcon={<UpdateIcon />}
                                   size="small"
                                   variant="contained" 
@@ -826,9 +876,9 @@ function DetailFamilyForm({
                             </Grid>
                             <Grid item>
                               <Button
-                                  // onMouseOver={() => setStatus(3)}
+                                  onMouseOver={() => setStatus(1)}
                                   // onMouseOut={() => setStatus(null)}
-                                  disabled={isEmpty(person)}
+                                  disabled={!isEmpty(infoPerson) ? (!infoPerson.id_person ? true : false) : true}
                                   startIcon={<AddIcon />}
                                   size="small"
                                   type="submit"
@@ -836,6 +886,19 @@ function DetailFamilyForm({
                                   style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px",marginRight:"5px"}}
                               >
                                   Chọn
+                              </Button>
+                            </Grid>
+                            <Grid item>
+                              <Button
+                                  onMouseOver={() => setStatus(2)}
+                                  // onMouseOut={() => setStatus(null)}
+                                  startIcon={<RotateLeftIcon />}
+                                  size="small"
+                                  type="submit"
+                                  variant="contained" 
+                                  style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px",marginRight:"5px"}}
+                              >
+                                  Reset
                               </Button>
                             </Grid>
                         </Grid>

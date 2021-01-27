@@ -36,14 +36,14 @@ function UserAdministration({
 
     const onSubmitForm = (value) => {
         setValues({
-            huyen: value.role===1 ? '' : (value.quanhuyen ? value.quanhuyen : ''),
-            xa: value.role===1 ? '' : (value.role===2 ? '' : (value.phuongxa ? value.phuongxa : '')),
+            huyen: value.role===1 ? '' : (value.quanhuyen ? value.quanhuyen : 'NOT NULL'),
+            xa: value.role===1 ? '' : (value.role===2 ? '' : (value.phuongxa ? value.phuongxa : 'NOT NULL')),
             tentaikhoan: value.idnguoidung ? value.idnguoidung : '',
             tenhienthi: value.tenhienthi ? value.tenhienthi : '',
             page : null,
         })
     }
-
+console.log({values})
     const onSubmitFormUpdateAccount = (valuesUpdate) => {
         valuesUpdate.huyen = values.huyen;
         valuesUpdate.xa = values.xa;
@@ -88,6 +88,7 @@ function UserAdministration({
             <Snackbars
                 open={snackbars}
                 onHandleSnackbars={onHandleSnackbars}
+                message={msg}
             />
             
             </Paper>

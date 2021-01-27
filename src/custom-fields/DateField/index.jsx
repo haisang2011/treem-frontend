@@ -38,10 +38,16 @@ function DateField(props) {
 
     const { name, value } = field
     const { touched, errors } = form
-
+console.log("DATE VALUE : ",value)
     const classes = useStyles()
 
-    const [selectedDate, handleDateChange] = React.useState(valueDate ? valueDate : null);
+    const [selectedDate, handleDateChange] = React.useState(value ? value : null);
+console.log({selectedDate})
+    React.useEffect(() => {
+      if(value!==undefined){
+        handleDateChange(value);
+      }
+    },[value])
 
     const onHandleDateChangeSubmit = (date) => {
 

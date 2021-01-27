@@ -27,7 +27,9 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import Row from '../Row';
 import { isEmpty } from 'lodash';
 import DialogComfirm from '../../../../components/DialogComfirmDelete';
+import DialogConfirmRestore from '../../../../components/DialogConfirmRestore';
 import DialogAddChildrenExcel from '../../../../components/DialogAddChildrenExcel';
+import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -123,7 +125,7 @@ const useStyles2 = makeStyles({
 
 export default function CustomPaginationActionsTable({ 
   childrenList, totalChildrenList, onHandlePagination, 
-  onHandleEdit, onHandleAdd, onDeleteChildren,
+  onHandleEdit, onHandleAdd, onDeleteChildren, thungrac, onRestore,
 }) {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
@@ -142,6 +144,8 @@ export default function CustomPaginationActionsTable({
   // };
 
   const [open, setOpen] = React.useState(false);
+
+  const [restore, setRestore] = React.useState(false);
 
   const [selectedID, setSelectedID] = React.useState([]);
   const onHandleSelectedID = (id) => {
@@ -201,6 +205,15 @@ export default function CustomPaginationActionsTable({
       content="Bạn có muốn cho vào thùng rác bản ghi được chọn không?"
     />
 
+    <DialogConfirmRestore
+      open={restore}
+      listId={!isEmpty(selectedID) ? selectedID : null}
+      handleOnClose={() => setRestore(false)}
+      onRestore={onRestore}
+      title="Thông báo"
+      content="Bạn có muốn khôi phục bản ghi được chọn không?"
+    />
+
     <DialogAddChildrenExcel
       handleOnClose={() => setOpenDialogExcel(false)}
       open={openDialogExcel}
@@ -219,12 +232,21 @@ export default function CustomPaginationActionsTable({
         <Button 
           variant="contained" 
           startIcon={<RemoveIcon />}
-          style={{textTransform:"none"}} 
+          style={{textTransform:"none", marginRight: "4px"}} 
           color="secondary"
           onClick={() => setOpen(true)}
         >
           Thùng rác
         </Button>
+        { thungrac === 2 ? 
+          <Button 
+            variant="contained" 
+            startIcon={<SettingsBackupRestoreIcon />}
+            style={{textTransform:"none", background: '#b2ff59', color: '#FFF'}} 
+            onClick={() => setRestore(true)}
+          >
+            Khôi phục
+          </Button> : null}
       </div>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}

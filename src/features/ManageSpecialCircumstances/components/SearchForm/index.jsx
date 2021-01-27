@@ -57,8 +57,8 @@ function SearchForm({
         chitieu: '',
         id_giadinh: '',
         hoten: '',
-        ngaybatdau: '',
-        ngayketthuc: '',
+        ngaybatdau: null,
+        ngayketthuc: null,
     }
 
     return (

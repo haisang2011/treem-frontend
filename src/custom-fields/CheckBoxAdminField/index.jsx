@@ -32,11 +32,13 @@ function CheckBoxAdminField(props) {
     const { 
         form, field, label, disabled,
     } = props
-    const { name } = field
+    const { name, value } = field
+
+    console.log({field})
 
     const classes = useStyles()
 
-    const [check, setCheck] = React.useState(false);
+    const [check, setCheck] = React.useState(value===0 ? false : (value===1 ? true : false));
 
     const handleChange = (event) => {
         const checked = event.target.checked;
@@ -58,6 +60,7 @@ function CheckBoxAdminField(props) {
             className={classes.formControl}
             disabled={disabled}
             {...field}
+            checked={check}
             onChange={handleChange}
         />
     )

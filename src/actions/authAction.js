@@ -306,7 +306,7 @@ export const login = (data) => (dispatch, getState) => {
                         /* Fetch List NCHCDB */
                         commonApi.getNCHCDB()
                         .then(resNCHCDB => {
-                            dispatch(fetchListHCDB(resNCHCDB.result))
+                            dispatch(fetchListNCHCDB(resNCHCDB.result))
                         })
                         .catch(errNCHCDB => {
                             dispatch(returnErrors(errNCHCDB.code, errNCHCDB.message))
@@ -419,16 +419,16 @@ export const logout = () => dispatch => {
 export const changePasswordRequest = body => dispatch => {
     userApi.changePasswordUser(body)
            .then(res => {
+                dispatch(returnErrors(res.code, res.message))
                 dispatch({
                     type : Auth.LOGIN_SUCCESS,
                     payload : res
                 })
            })
            .catch(err => {
-               dispatch(returnErrors(err.code, err.message))
-               dispatch({
-                    type : Auth.LOGIN_FAIL
-               })
+               const { code, message } = err.response.data;
+
+               dispatch(returnErrors(code, message))
            }) 
 }
 

@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginLeft: theme.spacing(2),
+    color: '#FFF',
     flex: 1,
   },
 }));
@@ -24,7 +25,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function FullScreenDialog({ open, handleOnClose, handleOnChangeParent, statusFamily }) {
+function FullScreenDialog({ open, handleOnClose, handleOnChangeParent, statusFamily, infoPerson, handleOnChangeInfoPerson }) {
   const classes = useStyles();
 //   const [open, setOpen] = React.useState(false);
 
@@ -50,6 +51,8 @@ function FullScreenDialog({ open, handleOnClose, handleOnChangeParent, statusFam
           </Toolbar>
         </AppBar>
         <DetailFamilyForm
+          infoPerson={infoPerson}
+          handleOnChangeInfoPerson={handleOnChangeInfoPerson}
           handleOnChangeParent={handleOnChangeParent}
           handleOnClose={handleOnClose}
           statusFamily={statusFamily}

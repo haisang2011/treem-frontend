@@ -51,8 +51,8 @@ function SearchForm({
         chitieu: '',
         id_giadinh: '',
         hoten: '',
-        ngaybatdau: '',
-        ngayketthuc: '',
+        ngaybatdau: null,
+        ngayketthuc: null,
     }
 
     return (
@@ -139,7 +139,7 @@ function SearchForm({
                             <Grid item xs={3}>
                                 <Field 
                                 name="hoten"
-                                component={SelectField}
+                                component={InputField}
 
                                 label="Họ tên trẻ em"
                                 placeholder="Nhập họ tên trẻ em..."

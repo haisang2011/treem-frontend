@@ -35,7 +35,54 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-function Header({ logout, username, locationUser }) {
+const Link = [
+    {
+        name: '/quanlytreem',
+        show: 'Quản lý trẻ em'
+    },
+    {
+        name: '/hoancanhdacbiet',
+        show: 'Hoàn cảnh đặc biệt'
+    },
+    {
+        name: '/nguycohoancanhdacbiet',
+        show: 'Nguy cơ hoàn cảnh đặc biệt'
+    },
+    {
+        name: '/hoancanhkhac',
+        show: 'Hoàn cảnh khác'
+    },
+    {
+        name: '/hinhthuctrogiup',
+        show: 'Hình thức trợ giúp'
+    },
+    {
+        name: '/khaithactreem',
+        show: 'Khai thác trẻ em'
+    },
+    {
+        name: '/khaithactreembinhthuong',
+        show: 'Khai thác trẻ em bình thường'
+    },
+    {
+        name: '/khaithactreemdoituong',
+        show: 'Khai thác trẻ em theo đối tượng'
+    },
+    {
+        name: '/khaithachogiadinh',
+        show: 'Khai thác hộ gia đình'
+    },
+    {
+        name: '/quantridiaphuong',
+        show: 'Quản lý địa phương'
+    },
+    {
+        name: '/quantringuoidung',
+        show: 'Quản lý người dùng'
+    },
+]
+
+function Header({ logout, username, locationUser, path }) {
 
     const classes = useStyles();
 
@@ -60,7 +107,7 @@ function Header({ logout, username, locationUser }) {
                 <NavLink
                     className="header__link"
                     activeClassName="header__link--active"
-                    to="/hoancanhdacbiet"
+                    to="/"
                     exact
                 >
                     <img
@@ -72,7 +119,8 @@ function Header({ logout, username, locationUser }) {
                 <span 
                     className="header__title"
                 >
-                    Quản lý trẻ em
+                    {/* Quản lý trẻ em */}
+                    { Link.find(({ name, show }) => name===path).show }
                 </span>
             </div>
 
@@ -86,7 +134,7 @@ function Header({ logout, username, locationUser }) {
                 { open ? (
                     <div className={classes.root}>
                     <List>
-                        <NavLink exact to="change-password">
+                        <NavLink exact to="change-password" style={{ color: "#000" }} >
                             <ListItem
                             button
                             >

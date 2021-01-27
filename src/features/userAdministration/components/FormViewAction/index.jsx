@@ -7,6 +7,11 @@ import CheckBoxField from '../../../../custom-fields/CheckBoxAdminField';
 import { lightBlue } from '@material-ui/core/colors';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import CloseIcon from '@material-ui/icons/Close';
+import DialogChangePassword from '../../../../components/DialogChangePassword';
+import { connect } from 'react-redux';
+import Snackbars from '../../../../components/Snackbars';
+import { clearErrors } from '../../../../actions/errorAction';
+import { updatePasswordAccountRequest } from '../../../../actions/manageAccount';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -24,7 +29,10 @@ const useStyles = makeStyles(() => ({
     }
 }))
 
-function FormViewAction({ account, onHandleUpdateAccount, handleOnClose }) {
+function FormViewAction({ 
+    account, onHandleUpdateAccount, handleOnClose, updatePasswordAccountRequest,
+    msg, code, clearErrors,
+}) {
 
     const classes = useStyles();
 
@@ -33,12 +41,33 @@ function FormViewAction({ account, onHandleUpdateAccount, handleOnClose }) {
         tentaikhoan: (account && account.length>0) ? account[0].tentaikhoan : '',
         tenhienthi: (account && account.length>0) ? account[0].tenhienthi : '',
         email: (account && account.length>0) ? account[0].email : '',
-        dakhoa : (account && account.length>0) ? 0 : '',
+        dakhoa : (account && account.length>0) ? account[0].dakhoa : '',
     }
+    console.log(initialValues)
 
     const onHandleSubmit = (values, action) => {
         onHandleUpdateAccount(values)
     }
+
+    const [open, setOpen] = React.useState(false);
+    const onUpdatePasswordAccount = (values) => {
+        values.id_taikhoan = (account && account.length>0) ? account[0].id_taikhoan : '';
+        if(values.id_taikhoan){
+            updatePasswordAccountRequest(values);
+        }
+    }
+
+    const [snackbars, setSnackbars] = React.useState(false);
+    const onHandleSnackbars = () => {
+        clearErrors();
+        setSnackbars(false);
+    }
+
+    React.useEffect(() => {
+        if(msg==="Đổi mật khẩu thành công" && code===200){
+            setSnackbars(true);
+        }
+    }, [msg, code])
 
     return (
         <div className="FormViewAction">
@@ -94,14 +123,26 @@ function FormViewAction({ account, onHandleUpdateAccount, handleOnClose }) {
                                             <Field 
                                                 name="dakhoa"
                                                 component={CheckBoxField}
-
                                                 
                                                 label="Khóa người dùng"
                                             />
                                         </Grid>
                                 </Grid>
                                 <Grid container item xs={12} justify="space-between" alignItems="center" spacing={1}>
-                                        <Grid container justify="flex-end" style={{color: lightBlue.A200}} item xs={6}>Đổi mật khẩu</Grid>
+                                        <Grid 
+                                            container 
+                                            justify="flex-end" 
+                                            style={{color: lightBlue.A200, cursor: 'pointer'}} 
+                                            onClick={() => setOpen(true)} 
+                                            item xs={6}
+                                        >
+                                            Đổi mật khẩu
+                                        </Grid>
+                                        <DialogChangePassword
+                                            open={open}
+                                            handleOnClose={() => setOpen(false)}
+                                            onSubmitForm={onUpdatePasswordAccount}
+                                        />
                                 </Grid>
                                 <DialogActions>
                                     <Button type="submit" startIcon={<SaveOutlinedIcon />} variant="contained" color="primary" style={{ textTransform:"none", color: "#FFF"}}>
@@ -111,6 +152,11 @@ function FormViewAction({ account, onHandleUpdateAccount, handleOnClose }) {
                                         Đóng
                                     </Button>
                                 </DialogActions>
+                                <Snackbars
+                                    open={snackbars}
+                                    onHandleSnackbars={onHandleSnackbars}
+                                    message={msg}
+                                />
                         </Form>
                     )
                 }}
@@ -123,5 +169,10 @@ FormViewAction.propTypes = {
 
 }
 
-export default FormViewAction
+const mapStateToProps = state => ({
+    msg : state.error.msg,
+    code : state.error.code,
+})
+
+export default connect(mapStateToProps, { updatePasswordAccountRequest, clearErrors })(FormViewAction)
 

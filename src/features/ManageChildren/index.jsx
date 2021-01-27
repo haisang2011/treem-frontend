@@ -13,6 +13,7 @@ import {
     fetchDataDetailChildrenFollowFamily,
     deleteChildrenIntoTrash,
     deleteChildrenMultiIntoTrash,
+    restoreChildrenMulti,
 } from '../../actions/manageChildrenAction';
 import Snackbars from '../../components/Snackbars';
 import Excel from '../../components/Excel';
@@ -43,7 +44,7 @@ function ManageChildren({
     fetchWardRequest, fetchVillageRequest, childrenList,
     totalChildrenList, fetchDataRequest, fetchDataDetailChildren,
     fetchDataDetailChildrenFollowFamily, msg, code, clearErrors,
-    deleteChildrenIntoTrash, deleteChildrenMultiIntoTrash,
+    deleteChildrenIntoTrash, deleteChildrenMultiIntoTrash, restoreChildrenMulti
 }) {
 
     const [values, setValues] = React.useState({
@@ -59,7 +60,7 @@ function ManageChildren({
         gioitinh: '',
         search: null,
     })
-    console.log({values})
+
     const onChoose = (id, step) => {
         if(step===1){
             fetchVillageRequest(id)
@@ -98,6 +99,10 @@ function ManageChildren({
             setSnackbars(true);
         }else if(msg==="Delete Children Into Trash Error" && code===500){
             setSnackbars(true);
+        }else if(msg==="Thực hiện thêm thành công" && code===200){
+            setSnackbars(true);
+        }else if(msg==="restore Children Success" && code===200){
+            setSnackbars(true);
         }
     }, [msg, code])
     const onHandleSnackbars = () => {
@@ -128,6 +133,10 @@ function ManageChildren({
         }
     }
 
+    const onRestoreChildren = (list) => {
+        restoreChildrenMulti(list)
+    }
+
     return (
         <div className="manageChildren">
             <Paper>
@@ -151,6 +160,8 @@ function ManageChildren({
                         onHandleEdit={onHandleEdit}
                         onHandleAdd={onHandleAdd}
                         onDeleteChildren={onDeleteChildren}
+                        onRestore={onRestoreChildren}
+                        thungrac={values.thungrac}
                     />
                 </Paper>
             </div>
@@ -188,5 +199,6 @@ export default connect(mapStateToProps,
     clearErrors,
     deleteChildrenIntoTrash,
     deleteChildrenMultiIntoTrash,
+    restoreChildrenMulti,
 })(ManageChildren)
 

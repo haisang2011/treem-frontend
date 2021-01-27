@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FormControl, InputLabel, makeStyles, MenuItem, Select } from '@material-ui/core'
+import { FormControl, InputLabel, makeStyles, MenuItem, Select,  } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -63,15 +63,25 @@ function SelectField(props) {
     field.onChange(changeEvent)
   };
 
+  // <button type="button" onClick={this.handleClick}>
+  //           Reset value
+  //         </button>
+
+  //   const handleOnClick = () => {
+
+  //   }
+
     return (
         <FormControl variant="outlined" margin="dense" className={classes.formControl}>
         { label && <InputLabel id={name} htmlFor={name}>{label}</InputLabel> }
+
         <Select
           labelId={name}
           id={name}
           {...field}
           onChange={handleSelect}
           // value={state}
+          displayEmpty={true}
           name={name}
           label={label}
           error={errors[name] && touched[name] ? true : false}

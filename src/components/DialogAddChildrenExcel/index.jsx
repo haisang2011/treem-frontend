@@ -11,9 +11,20 @@ import { makeStyles, Table, TableBody, TableContainer, TableHead, TableRow, Tabl
 import { amber, cyan, lightBlue, lightGreen } from '@material-ui/core/colors';
 import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import SaveIcon from '@material-ui/icons/Save';
-import { downloadFileExcelDataChildrenSampleRequest } from '../../actions/manageChildrenAction'
+import FormData from 'form-data';
+import { downloadFileExcelDataChildrenSampleRequest, fetchData, fetchDataFormOfHelp, fetchDataOtherCircumstances, fetchDataRiskSpecialCircumstances, fetchDataSpecialCircumstances, uploadFileExcelAddChildren } from '../../actions/manageChildrenAction'
+import manageChidlrenApi from '../../api/manageChildrenApi';
+import manageChildrenFormOfHelpApi from '../../api/manageChildrenFormOfHelpApi';
+import manageChildrenOtherCircumstancesApi from '../../api/manageChildrenOtherCircumstancesApi';
+import manageChildrenRiskSpecialApi from '../../api/manageChildrenRiskSpecialApi';
+import manageChildrenSpecialCircumstancesApi from '../../api/manageChildrenSpecialCircumstancesApi';
+import manageFamilyApi from '../../api/manageFamilyApi';
+import { returnErrors } from '../../actions/errorAction';
+import { useDispatch } from 'react-redux';
+import { fetchDataFamily } from '../../actions/manageFamilyAction';
 
 const useStyles = makeStyles(() => ({
   dialog: {
@@ -157,6 +168,8 @@ export default function AlertDialog({ open, handleOnClose, local, onSubmitForm, 
 
   const classes2 = useStyles2();
 
+  const dispatch = useDispatch();
+
   const handleClose = () => {
     handleOnClose(false);
   };
@@ -178,6 +191,86 @@ export default function AlertDialog({ open, handleOnClose, local, onSubmitForm, 
         setFile([...file, File])
     }
 
+  }
+
+  const handleOnSubmitFileExcel = () => {
+    const data = file.find(({ lastModified }) => lastModified===selectedID);
+    const form = new FormData();
+    form.append('file', data);
+    // uploadFileExcelAddChildren(form);
+    manageChidlrenApi.uploadFileAddChildren(form)
+                           .then(res => {
+                                dispatch(returnErrors(res.code, res.message));
+
+                                /* Load Data */
+                                manageChidlrenApi.getDataPaginationSearch()
+                                        .then(resChild => {
+                                            dispatch(fetchData(resChild.result, resChild.total))
+                                        })
+                                        .catch(errChild => {
+                                            dispatch(returnErrors(errChild.code, errChild.message))
+                                        })
+
+                        /* Special Circumstances */
+                        manageChildrenSpecialCircumstancesApi.getDataSearch()
+                        .then(specialCircumstances => {
+                            dispatch(fetchDataSpecialCircumstances(specialCircumstances.result, specialCircumstances.total))
+                        })
+                        .catch(errSpecialCircumstances => {
+                            dispatch(returnErrors(errSpecialCircumstances.code,errSpecialCircumstances.message))
+                        })
+
+
+                        /* Risk Special Circumstances */
+                        manageChildrenRiskSpecialApi.getDataSearch()
+                                                .then(RiskSpecial => {
+                                                    dispatch(fetchDataRiskSpecialCircumstances(RiskSpecial.result, RiskSpecial.total))
+                                                })
+                                                .catch(errRiskSpecial => {
+                                                    dispatch(returnErrors(errRiskSpecial.code,errRiskSpecial.message))
+                                                })
+
+
+                        /* Other Circumstances */
+                        manageChildrenOtherCircumstancesApi.getDataSearch()
+                                        .then(OtherCircumstances => {
+                                            dispatch(fetchDataOtherCircumstances(OtherCircumstances.result, OtherCircumstances.total))
+                                        })
+                                        .catch(errOtherCircumstances => {
+                                            dispatch(returnErrors(errOtherCircumstances.code,errOtherCircumstances.message))
+                                        })
+                                        
+                                        
+                        /* Form Of Help */
+                        manageChildrenFormOfHelpApi.getDataSearch()
+                                .then(FormOfHelp => {
+                                    dispatch(fetchDataFormOfHelp(FormOfHelp.result, FormOfHelp.total))
+                                })
+                                .catch(errFormOfHelp => {
+                                    dispatch(returnErrors(errFormOfHelp.code,errFormOfHelp.message))
+                                })
+
+
+                        /* Family */
+                        manageFamilyApi.getDataSearch()
+                                    .then(Family => {
+                                        dispatch(fetchDataFamily(Family.result, Family.total))
+                                    })
+                                    .catch(errFamily => {
+                                        dispatch(returnErrors(errFamily.code, errFamily.message));
+                                    })
+                                /* End Load Data */
+                            })
+                           .catch(err => {
+                             console.log("Fail")
+                           })
+    handleOnClose(false);
+  }
+
+  const handleDeleteFileOutList = (e, selected) => {
+    const UpdateFiles = file.filter(({ lastModified }) => lastModified!==selected);
+    setFile([...UpdateFiles])
+    e.stopPropagation()
   }
 
   return (
@@ -222,8 +315,8 @@ export default function AlertDialog({ open, handleOnClose, local, onSubmitForm, 
                             <TableCell style={{ width: 120 }}>
                                 {row.size}
                             </TableCell>
-                            <TableCell style={{ width: 70 }}>
-                                Xoas
+                            <TableCell style={{ width: 70 }} onClick={(e) => handleDeleteFileOutList(e, row.lastModified)}>
+                                <DeleteIcon />
                             </TableCell>
                         </TableRow>
                     ))}
@@ -247,12 +340,14 @@ export default function AlertDialog({ open, handleOnClose, local, onSubmitForm, 
                     startIcon={<GetAppIcon />} 
                     variant="contained" 
                     color="primary"
+                    style={{marginLeft:"5px"}}
                     >
                     Tải tài liệu
                     </ColorButton>
                 </div>
                 <div>
-                    <ColorButton 
+                    <ColorButton
+                    onClick={handleOnSubmitFileExcel} 
                     startIcon={<SaveIcon />}
                     variant="contained" 
                     color="secondary"

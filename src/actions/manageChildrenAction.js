@@ -526,6 +526,7 @@ export const updatePersonRequest = (body) => dispatch => {
     })
 }
 
+
 export const addPersonRequest = (body) => async (dispatch) => {
     return await ManageChidlrenApi.addPerson(body)
                     .then(res => {
@@ -701,6 +702,74 @@ export const deleteChildrenMultiIntoTrash = (listId) => dispatch => {
                      })
 }
 
+export const restoreChildrenMulti = (listId) => dispatch => {
+    ManageChidlrenApi.restoreInfoChildrenMultiFromTrash(listId)
+                     .then(res => {
+                        dispatch(returnErrors(res.code, res.message));
+
+                        ManageChidlrenApi.getDataPaginationSearch()
+                                        .then(resChild => {
+                                            dispatch(fetchData(resChild.result, resChild.total))
+                                        })
+                                        .catch(errChild => {
+                                            dispatch(returnErrors(errChild.code, errChild.message))
+                                        })
+
+                        /* Special Circumstances */
+                        SpecialCircumstancesApi.getDataSearch()
+                        .then(specialCircumstances => {
+                            dispatch(fetchDataSpecialCircumstances(specialCircumstances.result, specialCircumstances.total))
+                        })
+                        .catch(errSpecialCircumstances => {
+                            dispatch(returnErrors(errSpecialCircumstances.code,errSpecialCircumstances.message))
+                        })
+
+
+                        /* Risk Special Circumstances */
+                        RiskSpecialCircumstancesApi.getDataSearch()
+                                                .then(RiskSpecial => {
+                                                    dispatch(fetchDataRiskSpecialCircumstances(RiskSpecial.result, RiskSpecial.total))
+                                                })
+                                                .catch(errRiskSpecial => {
+                                                    dispatch(returnErrors(errRiskSpecial.code,errRiskSpecial.message))
+                                                })
+
+
+                        /* Other Circumstances */
+                        OtherCircumstancesApi.getDataSearch()
+                                        .then(OtherCircumstances => {
+                                            dispatch(fetchDataOtherCircumstances(OtherCircumstances.result, OtherCircumstances.total))
+                                        })
+                                        .catch(errOtherCircumstances => {
+                                            dispatch(returnErrors(errOtherCircumstances.code,errOtherCircumstances.message))
+                                        })
+                                        
+                                        
+                        /* Form Of Help */
+                        FormOfHelpApi.getDataSearch()
+                                .then(FormOfHelp => {
+                                    dispatch(fetchDataFormOfHelp(FormOfHelp.result, FormOfHelp.total))
+                                })
+                                .catch(errFormOfHelp => {
+                                    dispatch(returnErrors(errFormOfHelp.code,errFormOfHelp.message))
+                                })
+
+
+                        /* Family */
+                        manageFamilyApi.getDataSearch()
+                                    .then(Family => {
+                                        dispatch(fetchDataFamily(Family.result, Family.total))
+                                    })
+                                    .catch(errFamily => {
+                                        dispatch(returnErrors(errFamily.code, errFamily.message));
+                                    })
+
+                     })
+                     .catch(err => {
+                        dispatch(returnErrors(err.code, err.message))
+                     })
+}
+
 export const downloadFileExcelDataHCDBRequest = (query) => (dispatch) => {
     SpecialCircumstancesApi.downloadFileExcelHCDB(query)
                            .then(res => {
@@ -750,3 +819,24 @@ export const downloadFileExcelDataChildrenSampleRequest = () => {
                              console.log("Fail")
                            })
 }
+
+export const downloadFileDocHDSDRequest = () => {
+    ManageChidlrenApi.downloadFileDocHDSD()
+                           .then(res => {
+                               FileDownload(res, 'HDSD.doc')
+                            })
+                           .catch(err => {
+                             console.log("Fail")
+                           })
+}
+
+// export const uploadFileExcelAddChildren = (data) => {
+//     ManageChidlrenApi.uploadFileAddChildren(data)
+//                            .then(res => {
+//                                console.log({res})
+//                                 dispatch(returnErrors(res.code, res.message));
+//                             })
+//                            .catch(err => {
+//                              console.log("Fail")
+//                            })
+// }

@@ -85,6 +85,7 @@ function InputField(props) {
             code,
     } = props
     const { name, value } = field
+
     const { touched, errors } = form
     return (
         <MuiThemeProvider theme={theme}>

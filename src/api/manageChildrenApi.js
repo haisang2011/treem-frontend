@@ -130,6 +130,19 @@ const manageChidlrenApi = {
         }
     );
   },
+  restoreInfoChildrenMultiFromTrash: (listId) => {
+    const url = `/quan-ly-tre-em/khoiphuc-multi`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.post(
+        url,
+        {listId},
+        {
+          headers : {
+            'access-token' : accessToken,
+          }
+        }
+    );
+  },
   deleteInfoChildrenPhysical: (body) => {
     const url = `/quan-ly-tre-em/xoaf/:id_treem`;
     const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
@@ -192,6 +205,36 @@ const manageChidlrenApi = {
           headers : {
             'access-token' : accessToken,
             'content-type': 'application/vnd.ms-excel;charset=UTF-8',
+          }
+        }
+    );
+  },
+  downloadFileDocHDSD: () => {
+    const url = `/excel/HDSD`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.get(
+        url,
+        {
+          responseType: 'blob',
+          headers : {
+            'access-token' : accessToken,
+            'content-type': 'application/msword;charset=UTF-8',
+          }
+        }
+    );
+  },
+  uploadFileAddChildren: (data) => {
+    const url = `/excel/upload`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.post(
+        url,
+        data,
+        {
+          // responseType: 'blob',
+          headers : {
+            'access-token' : accessToken,
+            // 'content-type': 'application/msword;charset=UTF-8',
+            'content-type': 'multipart/form-data',
           }
         }
     );

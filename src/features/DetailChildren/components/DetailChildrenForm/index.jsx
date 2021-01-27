@@ -21,8 +21,9 @@ import moment from 'moment';
 import DialogFullScreen from '../../../../components/DialogFullScreen';
 import Snackbars from '../../../../components/Snackbars';
 import { clearErrors } from '../../../../actions/errorAction'
+import { getInfoPersonRequest } from '../../../../actions/manageChildrenAction'
 import { useDispatch, useSelector, connect } from 'react-redux'
-// import { DetailChildrenSchema } from '../../../../validation/Detail';
+import { DetailChildrenSchema } from '../../../../validation/Detail';
 
 const useStyles = makeStyles(() => ({
     root : {
@@ -71,34 +72,12 @@ function DetailChildrenForm({
         hoancanh: hoancanh ? hoancanh : 3,
         id_treem: id_treem ? id_treem : '',
         hoten: hoten ? hoten : '',
-        ngaysinh: ngaysinh ? moment(ngaysinh).format('YYYY/MM/DD') : '',
+        ngaysinh: ngaysinh ? moment(ngaysinh).format('YYYY/MM/DD') : null,
         dantoc: dantoc ? dantoc :'',
         gioitinh: gioitinh ? gioitinh :'',
         trinhdohocvan: trinhdohocvan ? trinhdohocvan :'',
         ghichu: ghichu ? ghichu :'',
     })
-    // const initialValues = {
-    //     tinhthanhpho: id_tinhthanhpho || '',
-    //     quanhuyen: id_quanhuyen || '',
-    //     phuongxa: id_phuongxa || '',
-    //     thon: id_thon || '',
-    //     id_giadinh: id_giadinh ? id_giadinh : '',
-    //     hotencha: hotencha ? hotencha : '',
-    //     hotenme: hotenme ? hotenme : '',
-    //     cha: cha ? cha : '',
-    //     me: me ? me : '',
-    //     nguoinuoiduong: nguoinuoiduong ? nguoinuoiduong : '',
-    //     sodienthoai: sodienthoai ? sodienthoai : '',
-    //     diachi: diachi ? diachi : '',
-    //     hoancanh: hoancanh ? hoancanh : 3,
-    //     id_treem: id_treem ? id_treem : '',
-    //     hoten: hoten ? hoten : '',
-    //     ngaysinh: ngaysinh ? moment(ngaysinh).format('YYYY/MM/DD') : '',
-    //     dantoc: dantoc ? dantoc :'',
-    //     gioitinh: gioitinh ? gioitinh :'',
-    //     trinhdohocvan: trinhdohocvan ? trinhdohocvan :'',
-    //     ghichu: ghichu ? ghichu :'',
-    // }
 
     const onSubmitFormik = (values, action) => {
         onSubmitForm(values);
@@ -127,13 +106,29 @@ function DetailChildrenForm({
     }
 
     /* Open Dialog Full Screen */
-    const [statusPositionFamily, setStatusPositionFamily] = React.useState(null);
-    const [openFullScreen, setOpenFullSreen] = React.useState(false);
-    const handleOnClick = (status) => {
-        setStatusPositionFamily(status);
-        setOpenFullSreen(true);
+    const [infoPerson, setInfoPerson] = React.useState(null);
+    const handleOnChangeInfoPerson = (value) => {
+        setInfoPerson({...value})
     }
 
+    const [statusPositionFamily, setStatusPositionFamily] = React.useState(null);
+    const [openFullScreen, setOpenFullScreen] = React.useState(false);
+    const handleOnClick = async (status) => {
+        setStatusPositionFamily(status);
+        setOpenFullScreen(true);
+        try{
+            const instance = await getInfoPersonRequest(status===1 ? cha : (status===2 ? me : idNguoiNuoi));
+            setInfoPerson(instance);
+          }catch(err){
+            console.log(err);
+          }
+    }
+/* 
+const handleOnAddPerson = async () => {
+      setIsLoading(false);
+      
+    }
+*/
     const handleOnChangeParent = (values) => {
         if(statusPositionFamily===1){
             setInitialValues({
@@ -173,7 +168,7 @@ function DetailChildrenForm({
             <Formik
                 enableReinitialize
                 initialValues={initialValues}
-                // validationSchema={DetailChildrenSchema}
+                validationSchema={DetailChildrenSchema}
                 onSubmit={onSubmitFormik}
             >
             {formikProps => {
@@ -320,8 +315,8 @@ function DetailChildrenForm({
                                                 disabled={isShowDetailChildrenFollowIdFamily ? true : false}
                                                 className="detailChildrenForm__formik--button_father"
                                                 size="small"
-                                                onClick={() => handleOnClick(1)}
-                                                variant="contained" 
+                                                onClick={() => handleOnClick(1, cha)}
+                                                variant="contained"
                                                 style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px"}}
                                             >
                                                 <MoreHorizIcon />
@@ -352,7 +347,7 @@ function DetailChildrenForm({
                                                     disabled={isShowDetailChildrenFollowIdFamily ? true : false}
                                                     className="detailChildrenForm__formik--button_father"
                                                     size="small"
-                                                    onClick={() => handleOnClick(2)}
+                                                    onClick={() => handleOnClick(2, me)}
                                                     variant="contained" 
                                                     style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px"}}
                                                 >
@@ -379,7 +374,7 @@ function DetailChildrenForm({
                                                     disabled={isShowDetailChildrenFollowIdFamily ? true : false}
                                                     className="detailChildrenForm__formik--button_father"
                                                     size="small"
-                                                    onClick={() => handleOnClick(3)}
+                                                    onClick={() => handleOnClick(3, idNguoiNuoi)}
                                                     variant="contained" 
                                                     style={{backgroundColor:"#35baf6",textTransform: "none",fontSize:"13px"}}
                                                 >
@@ -400,7 +395,8 @@ function DetailChildrenForm({
                                                 name="sodienthoai"
                                                 component={InputField}
 
-                                                disabled={isShowDetailChildrenFollowIdFamily ? true : false}
+                                                // disabled={isShowDetailChildrenFollowIdFamily ? true : false}
+                                                disabled={true}
                                                 label="Điện thoại"
                                                 
                                             />
@@ -593,7 +589,9 @@ function DetailChildrenForm({
                                 {/* Dialog */}
                                 <DialogFullScreen
                                     open={openFullScreen}
-                                    handleOnClose={() => setOpenFullSreen(false)}
+                                    handleOnClose={() => setOpenFullScreen(false)}
+                                    infoPerson={infoPerson}
+                                    handleOnChangeInfoPerson={handleOnChangeInfoPerson}
                                     handleOnChangeParent={handleOnChangeParent}
                                     statusFamily={statusPositionFamily}
                                 />

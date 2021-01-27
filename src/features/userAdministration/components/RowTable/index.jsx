@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import { amber, cyan } from '@material-ui/core/colors';
-import { createStyles, makeStyles } from '@material-ui/core';
+import { createStyles, Fab, makeStyles } from '@material-ui/core';
 import { FlashOnRounded } from '@material-ui/icons';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockIcon from '@material-ui/icons/Lock';
 
 const useStyles = makeStyles((theme) => createStyles({
     rowHover: {
@@ -49,6 +51,17 @@ function RowTable({ row, index, selectedID, onHandleSelectedID }) {
               </TableCell>
               <TableCell>
                 {row.email}
+              </TableCell>
+              <TableCell>
+                <Fab 
+                  variant="extended" 
+                  size="small" 
+                  style={{ textTransform: 'none' }} 
+                  color={row.dakhoa ? null : 'secondary'}
+                >
+                  { row.dakhoa ? <LockIcon /> : <LockOpenIcon /> }
+                  { row.dakhoa ? 'Đã khóa' : 'Đang sử dụng' }
+                </Fab>
               </TableCell>
             </TableRow>
     )

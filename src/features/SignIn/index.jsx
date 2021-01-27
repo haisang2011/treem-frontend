@@ -27,7 +27,9 @@ function SignIn({ auth, login, isAuthenticated, msg, code, clearErrors }) {
             setSnackbars(true);
         }else if(msg==="Password Invalid" && code===401){
             setSnackbars(true);
-        }else{}
+        }else if(msg==="The account is locked" && code===401){
+            setSnackbars(true);
+        }
     }, [msg, code])
     const onHandleSnackbars = () => {
         clearErrors();

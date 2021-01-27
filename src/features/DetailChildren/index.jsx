@@ -153,7 +153,7 @@ function DetailChildren({
             id_hoancanh : hoancanh,
             id_trogiup : trogiup,
         }
-        console.log(dataSubmit);
+        console.log({dataSubmit});
 
         if(isShowDetailChildren && !isShowDetailChildrenFollowIdFamily && !isShowDetailChildrenFollowLocationUser){
             //TODO Update Children

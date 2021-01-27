@@ -5,6 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import FormChangePassword from '../../features/userAdministration/components/FormChangePassword';
 import { makeStyles } from '@material-ui/core';
 import { lightBlue } from '@material-ui/core/colors';
 
@@ -25,23 +26,13 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export default function AlertDialog({ open, handleOnClose, onDelete, id, listId, title, content, }) {
+export default function AlertDialog({ open, handleOnClose, onSubmitForm, }) {
 
   const classes = useStyles();
 
   const handleClose = () => {
     handleOnClose(false);
   };
-
-  const handleOnDelete = () => {
-    if(id){
-      onDelete(id);
-      handleOnClose(false);
-    }else if(listId){
-      onDelete(listId);
-      handleOnClose(false);
-    }
-  }
 
   return (
     <div>
@@ -50,20 +41,15 @@ export default function AlertDialog({ open, handleOnClose, onDelete, id, listId,
         onClose={handleClose}
         className={classes.dialog}
       >
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Đổi mật khẩu</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {content}
+            <FormChangePassword
+                handleOnClose={handleOnClose}
+                onSubmitForm={onSubmitForm}
+            />
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleOnDelete} color="primary" variant="contained">
-            Yes
-          </Button>
-          <Button onClick={() => handleOnClose(false)} color="secondary" variant="contained">
-            No
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

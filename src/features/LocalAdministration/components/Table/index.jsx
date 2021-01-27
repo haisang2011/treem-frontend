@@ -111,7 +111,7 @@ const columns = [
   {
     title:"#",
     style:{
-        width: 70
+        width: 110
     }
   },
   {
@@ -120,12 +120,12 @@ const columns = [
     //     width: 200,
     // }
   },
-  {
-    title:"Thứ Tự",
-    style:{
-        width:200,
-    }
-  },
+  // {
+  //   title:"Thứ Tự",
+  //   style:{
+  //       width:200,
+  //   }
+  // },
 ]
 
 
@@ -302,7 +302,7 @@ export default function CustomPaginationActionsTable({ listLocal, onSubmitForm, 
         >
           Gộp thôn
         </Button>
-        <Button
+        {/* <Button
           className={classes.disabledButton}
           disabled={isEmpty(selectedID) ? true : false}
           startIcon={<SwapHorizIcon />} 
@@ -310,7 +310,7 @@ export default function CustomPaginationActionsTable({ listLocal, onSubmitForm, 
           style={{textTransform:"none", backgroundColor:"#35baf6", color:"#FFF"}}
         >
           Chuyển thôn
-        </Button>
+        </Button> */}
         {/* Dialog */}
         <DialogLocal
           open={open}

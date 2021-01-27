@@ -58,6 +58,21 @@ const manageAccountApi = {
         }
     );
   },
+  updatePasswordAccount: (params) => {
+    const id = params.id_taikhoan;
+    const body = params;
+    const url = `/account/update/password/${id}`;
+    const accessToken = store.getState().auth.token ? store.getState().auth.token : null;
+    return axiosClient.put(
+        url,
+        body,
+        {
+          headers : {
+            'access-token' : accessToken,
+          },
+        }
+    );
+  },
 }
 
 export default manageAccountApi;

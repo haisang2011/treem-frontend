@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export default function AlertDialog({ open, handleOnClose, onDelete, id, listId, title, content, }) {
+export default function AlertDialog({ open, handleOnClose, onRestore, id, listId, title, content, }) {
 
   const classes = useStyles();
 
@@ -33,12 +33,12 @@ export default function AlertDialog({ open, handleOnClose, onDelete, id, listId,
     handleOnClose(false);
   };
 
-  const handleOnDelete = () => {
+  const handleOnRestore = () => {
     if(id){
-      onDelete(id);
+      onRestore(id);
       handleOnClose(false);
     }else if(listId){
-      onDelete(listId);
+      onRestore(listId);
       handleOnClose(false);
     }
   }
@@ -57,7 +57,7 @@ export default function AlertDialog({ open, handleOnClose, onDelete, id, listId,
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleOnDelete} color="primary" variant="contained">
+          <Button onClick={handleOnRestore} color="primary" variant="contained">
             Yes
           </Button>
           <Button onClick={() => handleOnClose(false)} color="secondary" variant="contained">

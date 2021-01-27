@@ -1,16 +1,24 @@
 import React, { Fragment } from 'react';
 import ChangePasswordForm from './components/ChangePasswordForm';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
+import { resetPassword } from '../../contants/images'
 import { changePasswordRequest } from '../../actions/authAction';
 import { useEffect } from 'react';
+import './style.scss';
+import { clearErrors } from '../../actions/errorAction';
 import { Redirect, useHistory } from 'react-router-dom';
 
-function ChangePassword({ auth, changePasswordRequest, isAuthenticated }) {
+function ChangePassword({ auth, changePasswordRequest, isAuthenticated, code, msg }) {
 
-    // useEffect(() => {
-        
-    // }, [])
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(code === 200 && msg === 'Change password success'){
+            dispatch(clearErrors());
+            history.push('/');
+        }
+    }, [msg, code])
 
     const history = useHistory();
 
@@ -20,23 +28,27 @@ function ChangePassword({ auth, changePasswordRequest, isAuthenticated }) {
         confirmPassword: '',
     }
 
-    const onSubmitForm = async (values) => {
-        try {
-            await changePasswordRequest(values);
-            history.push('/');
-        } catch (error) {
-            
-        }
+    const onSubmitForm = (values) => {
+        changePasswordRequest(values);
     }
 
     return (
         <Fragment>
         {/* {(isAuthenticated && <Redirect from='/sign-in' to='/change-password' />)} */}
         <div className="changePassword">
-            <div className="signIn__loginForm">
+
+            <img 
+                src={resetPassword} 
+                alt="Background Children Page Sign-In"
+                className="changePassword__background" 
+            />
+
+            <div className="changePassword__loginForm">
                 <ChangePasswordForm   
                     initialValues={initialValues}
                     onSubmitForm={onSubmitForm}
+                    code={code}
+                    msg={msg}
                 />
             </div>
 
@@ -51,7 +63,8 @@ ChangePassword.propTypes = {
 
 const mapStateToProps = state => ({
     isAuthenticated : state.auth.isAuthenticated,
-    error: state.error
+    code: state.error.code,
+    msg: state.error.msg,
 })
 
 export default connect(mapStateToProps, { changePasswordRequest })(ChangePassword)

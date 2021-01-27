@@ -30,12 +30,13 @@ function DataMiningListChildrenFollowObject({
     }
 
     const onSubmitForm = (value) => {
+ 
         const dataSubmit = {
             thanhpho: value.tinhthanhpho ? value.tinhthanhpho : '',
             huyen: value.quanhuyen ? value.quanhuyen : '',
             xa: value.phuongxa ? value.phuongxa : '',
             thon : value.thon ? value.thon : '',
-            hoancanh : (value.hoancanh!=='') ? value.hoancanh : '',
+            hoancanh : value.hoancanh,
             dotuoitu : value.dotuoitu ? value.dotuoitu : '',
             dotuoiden : value.dotuoiden ? value.dotuoiden : '',
         }

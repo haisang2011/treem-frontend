@@ -5,6 +5,7 @@ import NotFound from './components/NotFound';
 import SignIn from './features/SignIn';
 import Main from './wrapper/Main';
 import ChangePassword from './wrapper/ChangePassword';
+import UseSupport from './wrapper/UseSupport';
 import { connect } from 'react-redux'
 import PrivateRoute from './wrapper/PrivateRoute';
 import PublicRoute from './wrapper/PublicRoute';
@@ -109,6 +110,14 @@ function App({ isAuthenticated, isLoading }) {
           exact
           component={ChangePassword}
           path='/change-password'
+          isLoading={isLoading}
+          isAuthenticated={isAuthenticated}
+        />
+
+        <PrivateRoute
+          exact
+          component={UseSupport}
+          path='/trogiup'
           isLoading={isLoading}
           isAuthenticated={isAuthenticated}
         />

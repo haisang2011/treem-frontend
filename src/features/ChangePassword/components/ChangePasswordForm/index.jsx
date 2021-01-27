@@ -1,7 +1,7 @@
 import React from 'react'
 import './ChangePassword.scss';
 import { Button } from '@material-ui/core'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
 import InputField from '../../../../custom-fields/InputField';
 import { ChangePasswordSchema } from '../../../../validation/signIn';
 
@@ -20,7 +20,7 @@ import { ChangePasswordSchema } from '../../../../validation/signIn';
 //     },
 // }))
 
-function ChangePasswordForm({ initialValues, onSubmitForm }) {
+function ChangePasswordForm({ initialValues, onSubmitForm, code, msg }) {
 
     const onSubmitFormik = (values, action) => {
         onSubmitForm(values)
@@ -28,13 +28,15 @@ function ChangePasswordForm({ initialValues, onSubmitForm }) {
 
     return (
         <div className="changePasswordForm">
-            <h3 className="changePasswordForm__title">Đăng Nhập Vào Hệ Thống</h3>
+            <h3 className="changePasswordForm__title">Đổi mật khẩu</h3>
         <Formik
             initialValues={initialValues}
             validationSchema={ChangePasswordSchema}
             onSubmit={onSubmitFormik}
         >
             {formikProps => {
+
+                const { errors, touched } = formikProps;
 
                 return (
                     <Form autoComplete="off" className="changePasswordForm__formik">
@@ -47,8 +49,12 @@ function ChangePasswordForm({ initialValues, onSubmitForm }) {
                             placeholder="Xin hãy nhập mật khẩu cũ..."
                             type="password"
                         />
-                        <br />
-
+                        { code && msg ? <div style={{ color: 'red' }}>{msg}</div> : 
+                            <ErrorMessage name="oldPassword">
+                                { msg__ => <div style={{ color: 'red' }}>{msg__}</div> }
+                            </ErrorMessage>
+                        }
+                        
 
                         <Field 
                             name="newPassword"
@@ -58,6 +64,9 @@ function ChangePasswordForm({ initialValues, onSubmitForm }) {
                             placeholder="Xin hãy nhập mật khẩu mới..."
                             type="password"
                         />
+                        <ErrorMessage name="newPassword">
+                            { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                        </ErrorMessage>
 
                         <Field 
                             name="confirmPassword"
@@ -67,6 +76,9 @@ function ChangePasswordForm({ initialValues, onSubmitForm }) {
                             placeholder="Xin hãy xác nhận mật khẩu mới..."
                             type="password"
                         />
+                        <ErrorMessage name="confirmPassword">
+                            { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                        </ErrorMessage>
                         <br />
 
                         <Button 

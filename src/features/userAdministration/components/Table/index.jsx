@@ -133,6 +133,13 @@ const columns = [
         borderLeft: "1px solid #d0d0d0",
     }
   },
+  {
+    title:"Trạng thái",
+    style:{
+      width:250,
+        borderLeft: "1px solid #d0d0d0",
+    }
+  },
 ]
 
 

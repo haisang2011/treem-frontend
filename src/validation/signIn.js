@@ -9,8 +9,8 @@ const SignInSchema = Yup.object().shape({
 
 const ChangePasswordSchema = Yup.object().shape({
     oldPassword: Yup.string().required('phải nhập mật khẩu cũ'),
-    newPassword: Yup.string().required('phải nhập mật khẩu mới'),
-    confirmPassword: Yup.string().required('phải xác nhận mật khẩu mới')
+    newPassword: Yup.string().required('phải nhập mật khẩu mới').min(8, 'Độ dài tối thiếu 8 kí tự'),
+    confirmPassword: Yup.string().required('phải xác nhận mật khẩu mới').oneOf([Yup.ref('newPassword'), null], 'Mật khẩu xác nhận không chính xác')
 });
 
 export {

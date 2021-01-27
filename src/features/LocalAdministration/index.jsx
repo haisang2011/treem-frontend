@@ -29,6 +29,8 @@ function LocalAdministration({
             setSnackbars(true);
         }else if(msg==="Xóa thôn thành công" && code===200){
             setSnackbars(true);
+        }else if(msg === "Gộp Thôn Thành Công" && code===200){
+            setSnackbars(true);
         }else if(msg===MESSAGE_ERROR_403 && code===403){
             setSnackbars(true);
         }

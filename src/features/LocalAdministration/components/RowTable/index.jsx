@@ -48,9 +48,6 @@ function RowTable({ row, index, selectedID, onHandleSelectedID, }) {
             <TableCell>
                 {row.tenthon}
             </TableCell>
-            <TableCell>
-                {0}
-            </TableCell>
         </TableRow>
     )
 }

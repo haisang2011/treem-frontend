@@ -25,30 +25,29 @@ function SearchForm({
 
     const listData = [
         {
-            value : 0,
+            value : 1,
             title: "Trẻ em có hoàn cảnh đặc biệt (HCĐB)",
             children : listHCDB
         },
         {
-            value : 1,
+            value : 2,
             title: "Trẻ em có nguy cơ rơi vào hoàn cảnh đặc biệt (NCĐB)",
             children : listNCHCDB
         },
         {
-            value : 2,
+            value : 3,
             title: "Trẻ em hoàn cảnh khác (HCK)",
             children : listHCK
         },
         {
-            value : 3,
-            title: "Các hình thức trợ giúp (HCĐB)",
+            value : 4,
+            title: "Các hình thức trợ giúp (HTTG)",
             children : listHTTG
         },
     ]
 
     const onSubmitFormik = (values, action) => {
-        console.log({values})
-        // onSubmitForm(values)
+        onSubmitForm(values)
     }
 
     const initialStatus = id_xa ? 0 : (!id_xa && id_quan ? 1 : (!id_quan && id_tinh ? 2 : null))
